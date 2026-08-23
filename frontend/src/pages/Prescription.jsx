@@ -36,7 +36,6 @@ export default function Prescription() {
           )}
         </div>
       </div>
-      
       <CustomerTable />
     </div>
   );
