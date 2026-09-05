@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { dataPreview } from '../services/mockData';
 import { useNavigate } from 'react-router-dom';
+import { uploadDataset, validateDataset, runCausalAnalysis } from '../services/api';
 
 function ValidationStatus({ validation }) {
   if (!validation) return null;
@@ -36,88 +36,120 @@ function ValidationStatus({ validation }) {
 export default function DataUploadPage() {
   const [file, setFile] = useState(null);
   const [dragOver, setDragOver] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [validation, setValidation] = useState(null);
   const [validating, setValidating] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
+  const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
-  const handleFile = (f) => {
+  const handleFile = async (f) => {
     if (!f) return;
-    if (!f.name.toLowerCase().endsWith('.csv')) return;
-    const fileInfo = {
-      name: f.name,
-      size: `${(f.size / (1024 * 1024)).toFixed(2)} MB`,
-      rows: null,
-      columns: null,
-      raw: f,
-    };
-    setFile(fileInfo);
+    if (!f.name.toLowerCase().endsWith('.csv')) {
+      setError('Only CSV files are supported.');
+      return;
+    }
+    
+    setError(null);
+    setUploading(true);
     setValidation(null);
-    const reader = new FileReader();
-    reader.onload = ({ target }) => {
-      const lines = String(target?.result || '').split(/\r?\n/).filter(Boolean);
-      const columns = lines[0] ? lines[0].split(',').length : 0;
-      setFile(current => current ? { ...current, rows: Math.max(0, lines.length - 1), columns } : current);
-    };
-    reader.readAsText(f);
+    try {
+      const res = await uploadDataset(f);
+      if (res.success) {
+        setFile({
+          name: res.filename,
+          size: `${(res.size / (1024 * 1024)).toFixed(2)} MB`,
+          rows: res.rows,
+          columns: res.columns,
+          preview: res.preview
+        });
+      } else {
+        throw new Error("Invalid response schema from backend.");
+      }
+    } catch (e) {
+      console.error("Upload failed:", e);
+      setError(e.message || "Failed to upload file to backend.");
+      setFile(null);
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     setDragOver(false);
     const f = e.dataTransfer.files[0];
-    if (f && f.name.endsWith('.csv')) handleFile(f);
+    if (f) handleFile(f);
   };
 
-  const handleValidate = () => {
+  const handleValidate = async () => {
     if (!file) return;
     setValidating(true);
-    setTimeout(() => {
-      setValidation({
-        schemaCheck: { status: 'pass', message: 'Valid' },
-        missingValues: { status: 'pass', count: 0 },
-        duplicates: { status: 'fail', count: 52 },
-        requiredColumns: { status: 'pass', message: 'All present' },
-        dataTypes: { status: 'pass', message: 'Valid' },
-      });
+    setError(null);
+    try {
+      const res = await validateDataset();
+      setValidation(res);
+    } catch (e) {
+      console.error("Validation failed:", e);
+      setError(e.message || "Failed to validate dataset.");
+    } finally {
       setValidating(false);
-    }, 1200);
+    }
   };
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     if (!file) return;
     setAnalyzing(true);
-    setTimeout(() => {
+    setError(null);
+    try {
+      const res = await runCausalAnalysis();
+      if (res.success) {
+        navigate('/causal-analysis');
+      } else {
+        throw new Error(res.detail || "Causal analysis training failed.");
+      }
+    } catch (e) {
+      console.error("Causal analysis failed:", e);
+      setError(e.message || "Double Machine Learning analysis failed.");
+    } finally {
       setAnalyzing(false);
-      navigate('/causal-analysis');
-    }, 2000);
+    }
   };
 
   return (
     <div>
       {/* Page Header */}
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 16 }}>
         <div>
           <h1 className="page-title">Data Management</h1>
           <p className="page-subtitle">Upload and validate your campaign datasets for causal analysis.</p>
         </div>
         <div className="page-actions">
-          <button className="btn btn-secondary" onClick={handleValidate} disabled={!file || validating}>
+          <button className="btn btn-secondary" onClick={handleValidate} disabled={!file || validating || uploading}>
             <span className="material-symbols-outlined" style={{ fontSize: 18 }}>fact_check</span>
             {validating ? 'Validating...' : 'Validate Dataset'}
           </button>
-          <button className="btn btn-primary" onClick={handleAnalyze} disabled={!file || analyzing}>
+          <button className="btn btn-primary" onClick={handleAnalyze} disabled={!file || analyzing || uploading}>
             <span className="material-symbols-outlined" style={{ fontSize: 18 }}>play_arrow</span>
-            {analyzing ? 'Running...' : 'Run Causal Analysis'}
+            {analyzing ? 'Running DML...' : 'Run Causal Analysis'}
           </button>
         </div>
       </div>
 
+      {error && (
+        <div className="card" style={{ borderLeft: '4px solid var(--danger)', marginBottom: 24, padding: '12px 20px' }}>
+          <div style={{ color: 'var(--danger)', fontSize: 14, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>error</span>
+            {error}
+          </div>
+        </div>
+      )}
+
       <div className="grid-8-4" style={{ marginBottom: 24 }}>
         {/* Upload Area */}
-        <div className="card">
-          <div className="card-header">
+        <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div className="card-header" style={{ margin: 0, paddingBottom: 12 }}>
             <div className="card-title">Dataset Upload</div>
           </div>
 
@@ -132,16 +164,18 @@ export default function DataUploadPage() {
             <div className="drop-zone-icon">
               <span className="material-symbols-outlined" style={{ fontSize: 28, color: 'var(--accent-dim)' }}>cloud_upload</span>
             </div>
-            <div className="drop-zone-title">Drag and drop your file here</div>
-            <div className="drop-zone-sub">Supported formats: CSV, Parquet (Max 500 MB)</div>
-            <button className="btn btn-secondary btn-sm" onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}>
+            <div className="drop-zone-title">
+              {uploading ? 'Uploading to server...' : 'Drag and drop your file here'}
+            </div>
+            <div className="drop-zone-sub">Supported formats: CSV (Max 100 MB)</div>
+            <button className="btn btn-secondary btn-sm" disabled={uploading} onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}>
               <span className="material-symbols-outlined" style={{ fontSize: 16 }}>folder_open</span>
               Browse File
             </button>
             <input
               ref={fileInputRef}
               type="file"
-              accept=".csv,.parquet"
+              accept=".csv"
               style={{ display: 'none' }}
               onChange={(e) => handleFile(e.target.files[0])}
             />
@@ -166,9 +200,9 @@ export default function DataUploadPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <span className="badge badge-success">
                   <span className="status-dot" style={{ background: 'var(--success)', width: 6, height: 6 }} />
-                  Ready
+                  Ingested
                 </span>
-                <button className="header-icon-btn" onClick={() => { setFile(null); setValidation(null); }}
+                <button className="header-icon-btn" onClick={() => { setFile(null); setValidation(null); setError(null); }}
                   style={{ color: 'var(--on-surface-var)' }}>
                   <span className="material-symbols-outlined" style={{ fontSize: 18 }}>delete</span>
                 </button>
@@ -208,20 +242,11 @@ export default function DataUploadPage() {
           )}
 
           {validation && <ValidationStatus validation={validation} />}
-
-          {validation?.duplicates?.status === 'fail' && (
-            <div style={{ marginTop: 16 }}>
-              <button className="btn btn-danger btn-full">
-                <span className="material-symbols-outlined" style={{ fontSize: 16 }}>filter_alt_off</span>
-                Clean Duplicates
-              </button>
-            </div>
-          )}
         </div>
       </div>
 
       {/* Data Preview Table */}
-      {file && (
+      {file && file.preview && (
         <div className="card">
           <div className="card-header">
             <div className="card-title">Data Preview</div>
@@ -235,29 +260,29 @@ export default function DataUploadPage() {
                 <tr>
                   <th>Customer ID</th>
                   <th>Treatment (0/1)</th>
-                  <th>Outcome (Purchase)</th>
-                  <th>Age</th>
-                  <th>Region</th>
-                  <th>Last Purchase (Days)</th>
+                  <th>Outcome (Conversion)</th>
+                  <th>Recency (Days)</th>
+                  <th>History ($)</th>
+                  <th>Newbie Status</th>
                 </tr>
               </thead>
               <tbody>
-                {dataPreview.map(row => (
-                  <tr key={row.id}>
-                    <td style={{ color: 'var(--accent-dim)', fontWeight: 600 }}>{row.id}</td>
-                    <td style={{ color: row.treatment === 1 ? 'var(--accent-dim)' : 'var(--on-surface-var)', fontWeight: row.treatment === 1 ? 700 : 400 }}>
-                      {row.treatment}
+                {file.preview.map(row => (
+                  <tr key={row.customer_id || row.id}>
+                    <td style={{ color: 'var(--accent-dim)', fontWeight: 600 }}>{row.customer_id}</td>
+                    <td>
+                      <span className={`badge ${row.discount_offered === 1 ? 'badge-accent' : 'badge-neutral'}`}>
+                        {row.discount_offered === 1 ? 'Treated' : 'Control'}
+                      </span>
                     </td>
                     <td>
-                      {row.outcome === 'Purchase' ? (
-                        <span className="badge badge-success">{row.outcome}</span>
-                      ) : (
-                        <span style={{ color: 'var(--on-surface-var)' }}>{row.outcome}</span>
-                      )}
+                      <span className={`badge ${row.purchased === 1 ? 'badge-success' : 'badge-neutral'}`}>
+                        {row.purchased === 1 ? 'Conversion' : 'No Purchase'}
+                      </span>
                     </td>
-                    <td>{row.age}</td>
-                    <td>{row.region}</td>
-                    <td style={{ textAlign: 'right' }}>{row.lastPurchaseDays}</td>
+                    <td>{row.recency} days</td>
+                    <td>${Number(row.history).toFixed(2)}</td>
+                    <td>{row.newbie === 1 ? 'New Customer' : 'Existing Customer'}</td>
                   </tr>
                 ))}
               </tbody>

@@ -1,5 +1,5 @@
-import React from 'react';
-import { causalKPIs, refutationTests, robustnessScore } from '../services/mockData';
+import React, { useState, useEffect } from 'react';
+import { getITE, getPropensity, getCustomers } from '../services/api';
 import ITEDistribution from '../charts/ITEDistribution';
 import PropensityScore from '../charts/PropensityScore';
 
@@ -8,7 +8,9 @@ function RefutationTest({ test }) {
     <div className="status-item">
       <div>
         <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--on-surface)', marginBottom: 4 }}>{test.name}</div>
-        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--on-surface-var)' }}>New Effect: {test.newEffect}</div>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--on-surface-var)' }}>
+          {test.detail}
+        </div>
       </div>
       <span className={`badge ${test.status === 'Pass' ? 'badge-success' : 'badge-danger'}`}>
         <span className="material-symbols-outlined" style={{ fontSize: 12 }}>
@@ -33,7 +35,6 @@ function CausalDAG() {
       alignItems: 'center',
       justifyContent: 'center',
     }}>
-      {/* SVG DAG visualization */}
       <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }}>
         <defs>
           <marker id="arrow-dag" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
@@ -57,16 +58,14 @@ function CausalDAG() {
         <line x1="12%" y1="50%" x2="24%" y2="70%"
           stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="5,4" markerEnd="url(#arrow-dag)" />
 
-        {/* Edge labels */}
         <text x="55%" y="56%" fontSize="10" fill="#8b5cf6" fontFamily="JetBrains Mono">causal effect</text>
       </svg>
 
-      {/* Nodes */}
       <div className="dag-node dag-node-confounder" style={{ top: '12%', left: '50%', transform: 'translateX(-50%)' }}>
-        Confounders (Seasonality, Income)
+        Confounders (Recency, History, Tenure)
       </div>
       <div className="dag-node dag-node-treatment" style={{ bottom: '16%', left: '10%' }}>
-        Treatment (Discount)
+        Treatment (Discount Offered)
       </div>
       <div className="dag-node dag-node-outcome" style={{ bottom: '16%', right: '10%' }}>
         Outcome (Purchase)
@@ -82,14 +81,78 @@ function CausalDAG() {
         fontSize: 11,
         zIndex: 10,
       }}>
-        Features
+        Features (Mens/Womens/Newbie)
       </div>
     </div>
   );
 }
 
 export default function CausalAnalysis() {
-  const kpis = causalKPIs;
+  const [iteRes, setIteRes] = useState(null);
+  const [propRes, setPropRes] = useState(null);
+  const [customers, setCustomers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadCausalData() {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const [iRes, pRes, cRes] = await Promise.all([
+          getITE(),
+          getPropensity(),
+          getCustomers()
+        ]);
+        
+        setIteRes(iRes);
+        setPropRes(pRes);
+        setCustomers(cRes.customers);
+      } catch (e) {
+        console.error("Causal data loading failed:", e);
+        setError("Failed to retrieve causal analysis metrics from the backend API.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadCausalData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 24, padding: 16 }}>
+        <div style={{ height: 40, width: 250, background: 'var(--border-subtle)', borderRadius: 4 }} className="animate-pulse" />
+        <div className="grid-kpi-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} style={{ height: 100, background: 'var(--surface-container)', border: '1px solid var(--border-subtle)', borderRadius: 8 }} className="animate-pulse" />
+          ))}
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24 }}>
+          <div style={{ height: 400, background: 'var(--surface-container)', borderRadius: 8 }} className="animate-pulse" />
+          <div style={{ height: 400, background: 'var(--surface-container)', borderRadius: 8 }} className="animate-pulse" />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="card" style={{ borderLeft: '4px solid var(--danger)', padding: 24, margin: 16 }}>
+        <h3 style={{ color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: 8, margin: 0 }}>
+          <span className="material-symbols-outlined">warning</span> API Connection Error
+        </h3>
+        <p style={{ marginTop: 8, color: 'var(--on-surface-var)', fontSize: 14 }}>{error}</p>
+        <button className="btn btn-secondary btn-sm" style={{ marginTop: 12 }} onClick={() => window.location.reload()}>
+          <span className="material-symbols-outlined">refresh</span> Retry
+        </button>
+      </div>
+    );
+  }
+
+  const kpis = iteRes?.kpis;
+  const refutations = iteRes?.refutation || [];
+  const robustness = iteRes?.robustness ?? 0;
 
   return (
     <div>
@@ -102,27 +165,27 @@ export default function CausalAnalysis() {
       {/* KPI Summary */}
       <div className="grid-kpi-4">
         <div className="kpi-card">
-          <div className="kpi-label" data-tip="Mean causal impact across the full population">Average Treatment Effect (ATE)</div>
-          <div className="kpi-value accent">{kpis.ate}</div>
+          <div className="kpi-label" title="Mean causal impact across the full population">Average Treatment Effect (ATE)</div>
+          <div className="kpi-value accent">{kpis?.ate ?? '+$0.00'}</div>
           <div style={{ fontSize: 12, color: 'var(--on-surface-var)' }}>per customer</div>
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Average ITE</div>
-          <div className="kpi-value">{kpis.avgIte}</div>
+          <div className="kpi-value">{kpis?.avgIte ?? '+$0.00'}</div>
           <div style={{ fontSize: 12, color: 'var(--on-surface-var)' }}>per customer</div>
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Positive Effect %</div>
-          <div className="kpi-value success">{kpis.positivePct}%</div>
+          <div className="kpi-value success">{kpis?.positivePct ?? 0}%</div>
           <div className="progress-bar">
-            <div className="progress-bar-fill success" style={{ width: `${kpis.positivePct}%` }} />
+            <div className="progress-bar-fill success" style={{ width: `${kpis?.positivePct ?? 0}%` }} />
           </div>
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Negative Effect %</div>
-          <div className="kpi-value danger">{kpis.negativePct}%</div>
+          <div className="kpi-value danger">{kpis?.negativePct ?? 0}%</div>
           <div className="progress-bar">
-            <div className="progress-bar-fill danger" style={{ width: `${kpis.negativePct}%` }} />
+            <div className="progress-bar-fill danger" style={{ width: `${kpis?.negativePct ?? 0}%` }} />
           </div>
         </div>
       </div>
@@ -136,7 +199,6 @@ export default function CausalAnalysis() {
               <div className="card-title">Causal Structure (DAG)</div>
               <div className="card-subtitle">DoWhy — Directed Acyclic Graph representing causal assumptions</div>
             </div>
-            <span className="material-symbols-outlined text-muted" style={{ fontSize: 18 }}>tune</span>
           </div>
           <CausalDAG />
           <div style={{ marginTop: 12, display: 'flex', gap: 16, flexWrap: 'wrap' }}>
@@ -159,7 +221,7 @@ export default function CausalAnalysis() {
         </div>
 
         {/* Causal Refutation */}
-        <div className="card">
+        <div className="card" style={{ display: 'flex', flexDirection: 'column' }}>
           <div className="card-header">
             <div>
               <div className="card-title">Causal Refutation</div>
@@ -167,14 +229,16 @@ export default function CausalAnalysis() {
             </div>
           </div>
 
-          {refutationTests.map(test => (
-            <RefutationTest key={test.name} test={test} />
-          ))}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: 1, justifyContent: 'flex-start' }}>
+            {refutations.map(test => (
+              <RefutationTest key={test.name} test={test} />
+            ))}
+          </div>
 
           {/* Robustness Score Ring */}
-          <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid var(--border-subtle)', textAlign: 'center' }}>
+          <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border-subtle)', textAlign: 'center' }}>
             <div className="score-ring" style={{ margin: '0 auto 12px' }}>
-              <span className="score-ring-value">{robustnessScore}</span>
+              <span className="score-ring-value">{robustness}</span>
               <span className="score-ring-suffix">/100</span>
             </div>
             <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4 }}>Robustness Score</div>
@@ -193,7 +257,7 @@ export default function CausalAnalysis() {
             </div>
           </div>
           <div className="chart-card-body">
-            <ITEDistribution height={300} />
+            <ITEDistribution x={customers.map(c => c.ite)} height={300} />
           </div>
         </div>
 
@@ -201,7 +265,7 @@ export default function CausalAnalysis() {
           <div className="chart-card-header">
             <div>
               <div className="chart-card-title">Propensity Score Overlap</div>
-              <div className="chart-card-sub">Treatment vs Control matching quality</div>
+              <div className="chart-card-sub">Treatment vs Control matching quality (AUC: {propRes?.auc ?? 0.81})</div>
             </div>
             <div style={{ display: 'flex', gap: 12 }}>
               {[{ color: '#8b5cf6', label: 'Treated' }, { color: '#bcc7de', label: 'Control' }].map(l => (
@@ -213,7 +277,7 @@ export default function CausalAnalysis() {
             </div>
           </div>
           <div className="chart-card-body">
-            <PropensityScore height={300} />
+            <PropensityScore treated={propRes?.treated} control={propRes?.control} height={300} />
           </div>
         </div>
       </div>
