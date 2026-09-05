@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Causal Analysis - EconoCausal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed-variant": "#5516be",
+                      "secondary": "#bcc7de",
+                      "outline-variant": "#45464d",
+                      "outline": "#909097",
+                      "error": "#ffb4ab",
+                      "on-tertiary": "#3c0091",
+                      "inverse-surface": "#e0e3e5",
+                      "on-error": "#690005",
+                      "tertiary": "#d0bcff",
+                      "surface-tint": "#bec6e0",
+                      "on-surface-variant": "#c6c6cd",
+                      "on-surface": "#e0e3e5",
+                      "surface-bright": "#363a3b",
+                      "secondary-fixed": "#d8e3fb",
+                      "tertiary-fixed": "#e9ddff",
+                      "on-secondary-container": "#aeb9d0",
+                      "primary-container": "#0f172a",
+                      "surface-container-highest": "#323537",
+                      "secondary-fixed-dim": "#bcc7de",
+                      "inverse-primary": "#565e74",
+                      "on-primary-fixed": "#131b2e",
+                      "primary": "#bec6e0",
+                      "surface-dim": "#101415",
+                      "tertiary-fixed-dim": "#d0bcff",
+                      "on-tertiary-fixed": "#23005c",
+                      "on-secondary": "#263143",
+                      "surface-container-low": "#191c1e",
+                      "on-background": "#e0e3e5",
+                      "primary-fixed": "#dae2fd",
+                      "on-error-container": "#ffdad6",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "surface": "#101415",
+                      "on-tertiary-container": "#9162fc",
+                      "surface-container": "#1d2022",
+                      "surface-container-high": "#272a2c",
+                      "background": "#101415",
+                      "tertiary-container": "#1e0052",
+                      "on-secondary-fixed": "#111c2d",
+                      "surface-container-lowest": "#0b0f10",
+                      "secondary-container": "#3e495d",
+                      "inverse-on-surface": "#2d3133",
+                      "error-container": "#93000a",
+                      "surface-variant": "#323537",
+                      "on-primary-container": "#798098",
+                      "primary-fixed-dim": "#bec6e0",
+                      "on-primary": "#283044",
+                      "on-secondary-fixed-variant": "#3c475a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "stack_gap_md": "16px",
+                      "stack_gap_lg": "24px",
+                      "gutter": "24px",
+                      "stack_gap_sm": "8px",
+                      "sidebar_width": "280px",
+                      "container_padding": "32px",
+                      "max_content_width": "1440px"
+              },
+              "fontFamily": {
+                      "headline-md-mobile": ["Geist"],
+                      "body-md": ["Inter"],
+                      "label-mono": ["JetBrains Mono"],
+                      "headline-md": ["Geist"],
+                      "headline-sm": ["Geist"],
+                      "display-lg": ["Geist"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-md-mobile": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-mono": ["13px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-md": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .causal-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            transition: all 0.2s ease-in-out;
+        }
+        .causal-card:hover {
+            border-top: 1px solid rgba(139, 92, 246, 0.3);
+            box-shadow: inset 0 1px 0 0 rgba(139, 92, 246, 0.1);
+        }
+        .causal-card-header {
+            border-bottom: 1px solid #334155;
+        }
+        .chart-area {
+            padding: 24px;
+        }
+        .bg-base {
+            background-color: #0f172a;
+        }
+    </style>
+</head>
+<body class="bg-base text-on-surface font-body-md min-h-screen flex antialiased">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-screen py-gutter bg-primary-container dark:bg-primary-container border-r border-outline-variant fixed left-0 top-0 w-sidebar_width z-40">
+<div class="px-gutter mb-8">
+<div class="flex items-center gap-3">
+<img alt="EconoCausal Logo" class="w-8 h-8 rounded" data-alt="A minimalist, highly abstract geometric logo design for an enterprise AI company named EconoCausal. The logo features sharp angles and intersecting lines in deep obsidian and vibrant high-frequency purple (#8b5cf6), placed against a dark slate background. The style is modern, technical, and precise, conveying authority and causal intelligence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5cOJDIb9LrNCpVFMvH57T2i4LPzcP5zdZeH1GSmm0GqybnrrFNOXIRGmm9_-FBL0VnsdbxFcgKyfScoXPYyYo3HN3CJ2FHIBXfkla4onH0UyQ_mgjRZwwdz7mg_GOH5h1E3G50pnOwAuoum5Ix74xv0l7KVStPFNvNSyVecCAXvKhJ60KZDQ5R8QlE-vryyy5Xjq0PaST143L7s5wMFhrNoKm49EcvsfJz_AR7xw_0btHFxm1HM4"/>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary-fixed">EconoCausal</h1>
+<p class="font-label-mono text-label-mono text-on-primary-container">Causal AI Dashboard</p>
+</div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto px-4 space-y-1">
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">cloud_upload</span>
+<span>Data Upload</span>
+</a>
+<a class="text-tertiary dark:text-tertiary border-l-4 border-tertiary font-bold pl-4 py-3 flex items-center gap-3 bg-on-primary-fixed-variant/50 rounded-r-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">troubleshoot</span>
+<span>Causal Analysis</span>
+</a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Customer Analysis</span>
+</a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">precision_manufacturing</span>
+<span>Prescription</span>
+</a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span>Optimization</span>
+</a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span>Reports</span>
+</a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">monitor_heart</span>
+<span>System Monitoring</span>
+</a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</div>
+<div class="px-gutter mt-auto">
+<button class="w-full bg-[#8b5cf6] text-white py-3 rounded-lg font-body-md font-semibold hover:brightness-110 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">play_arrow</span>
+                Run New Analysis
+            </button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 md:ml-sidebar_width">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-gutter h-20 bg-surface dark:bg-surface border-b border-outline-variant docked full-width top-0 sticky z-30">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface hidden md:block">EconoCausal</h2>
+<div class="hidden md:flex items-center bg-surface-variant rounded-full px-4 py-2 border border-outline-variant ml-4">
+<span class="material-symbols-outlined text-on-surface-variant mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-on-surface text-sm w-64 placeholder-on-surface-variant" placeholder="Search analyses..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-tertiary-fixed transition-colors duration-150">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="relative">
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full animate-pulse"></span>
+<button class="text-on-surface-variant hover:text-tertiary-fixed transition-colors duration-150">
+<span class="material-symbols-outlined">wifi_tethering</span>
+</button>
+</div>
+<img alt="User profile" class="w-10 h-10 rounded-full border border-outline-variant object-cover cursor-pointer" data-alt="A professional headshot of a corporate analytics executive. The lighting is moody and cinematic, highlighting sharp features against a dark, minimalist office background. High contrast, sharp focus, capturing an aura of intelligence and decision-making authority." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBTc4J2ERd7lDAan--TNOslr6mPHVEgIPoksCpk46GWqP5FF4d57UKKmdqrcabNaHrkBkG1_07amZoS5RJhmSmGcEM8CFSuoKPqkWwYj5PPjj2XxLj3fL7ZnHjCgLG7g14HvFe3u-TeSayBQLmgf_U94FtsBbtz5Nkb-FEMWaoVBGwAaPd0SJTyktj2MtkuaIhMXb3ZTtVL3tgUYCEOz1RHZOlS9T9eOLhOsbV9rSAaxs998x3taA"/>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-container_padding max-w-max_content_width w-full mx-auto space-y-stack_gap_lg">
+<!-- Page Header -->
+<div class="mb-8">
+<h1 class="font-display-lg text-display-lg text-on-surface mb-2">Causal Inference</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Understand the true impact of discounts on customer behavior.</p>
+</div>
+<!-- Effect Summary KPIs -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-stack_gap_md">
+<div class="causal-card rounded-lg p-6">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-mono text-label-mono text-on-surface-variant uppercase">Average Treatment Effect (ATE)</h3>
+<span class="material-symbols-outlined text-tertiary">functions</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-on-surface">+$4.20</span>
+<span class="text-sm text-secondary">per user</span>
+</div>
+</div>
+<div class="causal-card rounded-lg p-6">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-mono text-label-mono text-on-surface-variant uppercase">Average ITE</h3>
+<span class="material-symbols-outlined text-tertiary">person</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-on-surface">+$3.85</span>
+<span class="text-sm text-secondary">per user</span>
+</div>
+</div>
+<div class="causal-card rounded-lg p-6">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-mono text-label-mono text-on-surface-variant uppercase">Positive Effect %</h3>
+<span class="material-symbols-outlined text-[#8b5cf6]">trending_up</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-on-surface">68%</span>
+<span class="text-sm text-secondary">of population</span>
+</div>
+<div class="w-full bg-[#334155] h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-[#8b5cf6] h-full rounded-full" style="width: 68%"></div>
+</div>
+</div>
+<div class="causal-card rounded-lg p-6">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-mono text-label-mono text-on-surface-variant uppercase">Negative Effect %</h3>
+<span class="material-symbols-outlined text-[#f43f5e]">trending_down</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-on-surface">12%</span>
+<span class="text-sm text-secondary">of population</span>
+</div>
+<div class="w-full bg-[#334155] h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-[#f43f5e] h-full rounded-full" style="width: 12%"></div>
+</div>
+</div>
+</div>
+<!-- Complex Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-stack_gap_lg">
+<!-- Causal DAG -->
+<div class="causal-card rounded-lg lg:col-span-2 flex flex-col">
+<div class="causal-card-header p-6 flex justify-between items-center">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Causal Structure (DAG)</h3>
+<button class="text-secondary hover:text-tertiary transition-colors">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+<div class="chart-area flex-1 min-h-[400px] relative bg-[#151e2e] flex items-center justify-center">
+<!-- Simulated DAG Visualization -->
+<div class="relative w-full max-w-2xl aspect-video border border-[#334155]/50 rounded p-8 flex items-center justify-center">
+<!-- Nodes -->
+<div class="absolute top-8 left-1/2 -translate-x-1/2 px-4 py-2 border border-[#8b5cf6] bg-[#8b5cf6]/10 text-on-surface font-label-mono rounded text-sm z-10">Confounders (Seasonality, Income)</div>
+<div class="absolute bottom-12 left-16 px-4 py-2 border border-secondary bg-secondary/10 text-on-surface font-label-mono rounded text-sm z-10">Treatment (Discount)</div>
+<div class="absolute bottom-12 right-16 px-4 py-2 border border-secondary bg-secondary/10 text-on-surface font-label-mono rounded text-sm z-10">Outcome (Purchase)</div>
+<div class="absolute top-1/2 left-4 -translate-y-1/2 px-4 py-2 border border-outline-variant bg-surface-variant text-on-surface font-label-mono rounded text-sm z-10">Features</div>
+<!-- Edges (SVG) -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 0;">
+<defs>
+<marker id="arrow" markerheight="6" markerwidth="6" orient="auto-start-reverse" refx="9" refy="5" viewbox="0 0 10 10">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"></path>
+</marker>
+</defs>
+<!-- Confounder to Treatment -->
+<line marker-end="url(#arrow)" stroke="#94a3b8" stroke-width="2" x1="50%" x2="25%" y1="20%" y2="75%"></line>
+<!-- Confounder to Outcome -->
+<line marker-end="url(#arrow)" stroke="#94a3b8" stroke-width="2" x1="50%" x2="75%" y1="20%" y2="75%"></line>
+<!-- Treatment to Outcome -->
+<line marker-end="url(#arrow)" stroke="#8b5cf6" stroke-width="3" x1="35%" x2="65%" y1="80%" y2="80%"></line>
+<!-- Features to Treatment -->
+<line marker-end="url(#arrow)" stroke="#94a3b8" stroke-dasharray="4" stroke-width="2" x1="15%" x2="25%" y1="50%" y2="70%"></line>
+</svg>
+</div>
+</div>
+</div>
+<!-- Causal Refutation -->
+<div class="causal-card rounded-lg flex flex-col">
+<div class="causal-card-header p-6">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Causal Refutation</h3>
+<p class="text-sm text-on-surface-variant mt-1">Model robustness checks</p>
+</div>
+<div class="p-6 space-y-4 flex-1">
+<!-- Test 1 -->
+<div class="bg-surface-container border border-outline-variant rounded p-4 flex items-center justify-between">
+<div>
+<h4 class="font-body-md font-medium text-on-surface">Random Common Cause Test</h4>
+<p class="font-label-mono text-xs text-on-surface-variant mt-1">New Effect: $4.18</p>
+</div>
+<div class="px-3 py-1 bg-emerald-900/30 border border-emerald-500/50 text-emerald-400 font-label-mono text-xs rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Pass
+                            </div>
+</div>
+<!-- Test 2 -->
+<div class="bg-surface-container border border-outline-variant rounded p-4 flex items-center justify-between">
+<div>
+<h4 class="font-body-md font-medium text-on-surface">Placebo Treatment Test</h4>
+<p class="font-label-mono text-xs text-on-surface-variant mt-1">New Effect: $0.02</p>
+</div>
+<div class="px-3 py-1 bg-emerald-900/30 border border-emerald-500/50 text-emerald-400 font-label-mono text-xs rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Pass
+                            </div>
+</div>
+<!-- Score -->
+<div class="mt-8 pt-6 border-t border-outline-variant text-center">
+<div class="inline-flex items-center justify-center w-24 h-24 rounded-full border-4 border-[#8b5cf6] relative">
+<span class="font-display-lg text-display-lg text-on-surface">94</span>
+<span class="absolute -bottom-2 bg-surface px-2 text-xs font-label-mono text-tertiary">/100</span>
+</div>
+<p class="font-body-md text-on-surface mt-4 font-medium">Robustness Score</p>
+<p class="text-sm text-on-surface-variant mt-1">High confidence in causal estimates.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Lower Charts Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-stack_gap_lg">
+<!-- ITE Distribution -->
+<div class="causal-card rounded-lg">
+<div class="causal-card-header p-6 flex justify-between items-center">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">ITE Distribution</h3>
+<p class="text-sm text-on-surface-variant mt-1">Individual Treatment Effects across population</p>
+</div>
+<button class="text-secondary hover:text-tertiary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="chart-area h-80 relative flex items-end justify-between px-8 pb-12 pt-8">
+<!-- Grid lines -->
+<div class="absolute inset-0 flex flex-col justify-between py-12 px-8 pointer-events-none">
+<div class="w-full h-px bg-[#334155]/50"></div>
+<div class="w-full h-px bg-[#334155]/50"></div>
+<div class="w-full h-px bg-[#334155]/50"></div>
+<div class="w-full h-px bg-[#334155]/50"></div>
+</div>
+<!-- Zero Line -->
+<div class="absolute left-8 right-8 bottom-12 h-px bg-on-surface-variant z-10"></div>
+<span class="absolute bottom-6 left-1/2 -translate-x-1/2 font-label-mono text-xs text-on-surface-variant">$0 Effect</span>
+<!-- Simulated Histogram Bars (Negative) -->
+<div class="w-8 bg-[#f43f5e]/80 border border-[#f43f5e] h-4 z-20 rounded-t-sm hover:brightness-125 cursor-pointer transition-all"></div>
+<div class="w-8 bg-[#f43f5e]/80 border border-[#f43f5e] h-8 z-20 rounded-t-sm hover:brightness-125 cursor-pointer transition-all"></div>
+<div class="w-8 bg-[#f43f5e]/80 border border-[#f43f5e] h-12 z-20 rounded-t-sm hover:brightness-125 cursor-pointer transition-all"></div>
+<!-- Simulated Histogram Bars (Positive) -->
+<div class="w-8 bg-[#8b5cf6]/80 border border-[#8b5cf6] h-16 z-20 rounded-t-sm hover:brightness-125 cursor-pointer transition-all"></div>
+<div class="w-8 bg-[#8b5cf6]/80 border border-[#8b5cf6] h-32 z-20 rounded-t-sm hover:brightness-125 cursor-pointer transition-all"></div>
+<div class="w-8 bg-[#8b5cf6]/80 border border-[#8b5cf6] h-48 z-20 rounded-t-sm hover:brightness-125 cursor-pointer transition-all"></div>
+<div class="w-8 bg-[#8b5cf6]/80 border border-[#8b5cf6] h-64 z-20 rounded-t-sm hover:brightness-125 cursor-pointer transition-all"></div>
+<div class="w-8 bg-[#8b5cf6]/80 border border-[#8b5cf6] h-40 z-20 rounded-t-sm hover:brightness-125 cursor-pointer transition-all"></div>
+<div class="w-8 bg-[#8b5cf6]/80 border border-[#8b5cf6] h-24 z-20 rounded-t-sm hover:brightness-125 cursor-pointer transition-all"></div>
+<div class="w-8 bg-[#8b5cf6]/80 border border-[#8b5cf6] h-10 z-20 rounded-t-sm hover:brightness-125 cursor-pointer transition-all"></div>
+</div>
+</div>
+<!-- Propensity Score -->
+<div class="causal-card rounded-lg">
+<div class="causal-card-header p-6 flex justify-between items-center">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Propensity Score Overlap</h3>
+<p class="text-sm text-on-surface-variant mt-1">Treatment vs Control matching quality</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-[#8b5cf6]"></div>
+<span class="font-label-mono text-xs text-on-surface-variant">Treated</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<span class="font-label-mono text-xs text-on-surface-variant">Control</span>
+</div>
+</div>
+</div>
+<div class="chart-area h-80 relative flex items-end justify-center px-8 pb-12 pt-8">
+<!-- Abstract Area Chart Representation using CSS -->
+<div class="absolute inset-x-8 bottom-12 top-8 overflow-hidden rounded">
+<!-- Control Curve (Background) -->
+<div class="absolute bottom-0 w-full h-4/5 bg-gradient-to-t from-secondary/20 to-transparent blur-md"></div>
+<!-- Treated Curve (Foreground) -->
+<div class="absolute bottom-0 w-4/5 left-1/5 h-full bg-gradient-to-t from-[#8b5cf6]/30 to-transparent blur-md translate-x-12"></div>
+<!-- Simulated Paths -->
+<svg class="absolute inset-0 w-full h-full preserve-3d" preserveaspectratio="none" viewbox="0 0 100 100">
+<!-- Control -->
+<path d="M0,100 C20,90 30,20 50,20 C70,20 80,90 100,100" fill="none" stroke="#bcc7de" stroke-width="2"></path>
+<!-- Treated -->
+<path d="M10,100 C30,95 45,10 65,10 C85,10 95,95 100,100" fill="none" stroke="#8b5cf6" stroke-width="2"></path>
+</svg>
+</div>
+<!-- Axis -->
+<div class="absolute left-8 right-8 bottom-12 h-px bg-[#334155] z-10"></div>
+<div class="absolute bottom-4 w-full px-8 flex justify-between font-label-mono text-xs text-on-surface-variant">
+<span>0.0</span>
+<span>Propensity Score</span>
+<span>1.0</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

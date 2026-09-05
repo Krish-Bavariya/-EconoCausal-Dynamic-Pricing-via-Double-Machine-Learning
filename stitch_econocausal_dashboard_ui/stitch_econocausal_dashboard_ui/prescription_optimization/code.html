@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Prescription &amp; Discount Optimization - EconoCausal</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "secondary": "#bcc7de",
+                        "outline-variant": "#45464d",
+                        "outline": "#909097",
+                        "error": "#ffb4ab",
+                        "on-tertiary": "#3c0091",
+                        "inverse-surface": "#e0e3e5",
+                        "on-error": "#690005",
+                        "tertiary": "#d0bcff",
+                        "surface-tint": "#bec6e0",
+                        "on-surface-variant": "#c6c6cd",
+                        "on-surface": "#e0e3e5",
+                        "surface-bright": "#363a3b",
+                        "secondary-fixed": "#d8e3fb",
+                        "tertiary-fixed": "#e9ddff",
+                        "on-secondary-container": "#aeb9d0",
+                        "primary-container": "#0f172a",
+                        "surface-container-highest": "#323537",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "inverse-primary": "#565e74",
+                        "on-primary-fixed": "#131b2e",
+                        "primary": "#bec6e0",
+                        "surface-dim": "#101415",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "on-tertiary-fixed": "#23005c",
+                        "on-secondary": "#263143",
+                        "surface-container-low": "#191c1e",
+                        "on-background": "#e0e3e5",
+                        "primary-fixed": "#dae2fd",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "surface": "#101415",
+                        "on-tertiary-container": "#9162fc",
+                        "surface-container": "#1d2022",
+                        "surface-container-high": "#272a2c",
+                        "background": "#101415",
+                        "tertiary-container": "#1e0052",
+                        "on-secondary-fixed": "#111c2d",
+                        "surface-container-lowest": "#0b0f10",
+                        "secondary-container": "#3e495d",
+                        "inverse-on-surface": "#2d3133",
+                        "error-container": "#93000a",
+                        "surface-variant": "#323537",
+                        "on-primary-container": "#798098",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-primary": "#283044",
+                        "on-secondary-fixed-variant": "#3c475a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack_gap_md": "16px",
+                        "stack_gap_lg": "24px",
+                        "gutter": "24px",
+                        "stack_gap_sm": "8px",
+                        "sidebar_width": "280px",
+                        "container_padding": "32px",
+                        "max_content_width": "1440px"
+                    },
+                    "fontFamily": {
+                        "headline-md-mobile": ["Geist"],
+                        "body-md": ["Inter"],
+                        "label-mono": ["JetBrains Mono"],
+                        "headline-md": ["Geist"],
+                        "headline-sm": ["Geist"],
+                        "display-lg": ["Geist"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md-mobile": ["24px", { "lineHeight": "30px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-mono": ["13px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-md": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #101415; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #323537; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #45464d; 
+        }
+        .chart-grid {
+            background-image: linear-gradient(to right, #323537 1px, transparent 1px), linear-gradient(to bottom, #323537 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: bottom left;
+        }
+        .card-level-1 {
+            background-color: #1e293b; /* Fallback closer to design spec if config misses exact shade, but using surface-container below primarily */
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased overflow-hidden flex h-screen">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full w-sidebar_width bg-primary-container dark:bg-primary-container border-r border-outline-variant flex flex-col py-gutter z-50">
+<div class="px-6 mb-8 flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-on-tertiary-container flex items-center justify-center text-surface-container-lowest font-bold text-xl shadow-lg">
+                E
+            </div>
+<div>
+<h1 class="font-headline-md text-headline-sm font-bold text-on-primary-fixed leading-tight">EconoCausal</h1>
+<p class="text-on-primary-container text-xs mt-1 uppercase tracking-wider">Causal AI Dashboard</p>
+</div>
+</div>
+<div class="px-6 mb-6">
+<button class="w-full bg-surface-container-highest hover:bg-surface-variant text-on-surface border border-outline-variant rounded-lg py-2.5 px-4 flex items-center justify-center gap-2 transition-colors duration-200 shadow-sm">
+<span class="material-symbols-outlined text-sm">add</span>
+<span class="font-body-md text-sm font-medium">Run New Analysis</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto px-3 space-y-1">
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg mx-1" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg mx-1" href="#">
+<span class="material-symbols-outlined">cloud_upload</span>
+<span>Data Upload</span>
+</a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg mx-1" href="#">
+<span class="material-symbols-outlined">troubleshoot</span>
+<span>Causal Analysis</span>
+</a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg mx-1" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Customer Analysis</span>
+</a>
+<a class="text-tertiary dark:text-tertiary border-l-4 border-tertiary font-bold pl-4 py-3 flex items-center gap-3 bg-surface-container-low rounded-r-lg bg-opacity-50" href="#">
+<span class="material-symbols-outlined icon-fill">precision_manufacturing</span>
+<span>Prescription</span>
+</a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg mx-1" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span>Optimization</span>
+</a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg mx-1" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span>Reports</span>
+</a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg mx-1" href="#">
+<span class="material-symbols-outlined">monitor_heart</span>
+<span>System Monitoring</span>
+</a>
+</div>
+<div class="px-4 mt-auto pb-4">
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="ml-sidebar_width flex flex-col flex-1 h-screen w-full relative">
+<!-- TopNavBar -->
+<header class="docked full-width top-0 sticky z-40 bg-surface dark:bg-surface border-b border-outline-variant flex justify-between items-center w-full px-gutter h-20 shadow-sm shrink-0">
+<div class="flex items-center gap-4 flex-1">
+<!-- Search bar on left -->
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="w-full bg-surface-container-highest border border-outline-variant text-on-surface rounded-md py-1.5 pl-9 pr-3 text-sm focus:border-on-tertiary-container focus:ring-1 focus:ring-on-tertiary-container outline-none transition-colors" placeholder="Search models or entities..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4 border-r border-outline-variant pr-6">
+<button class="text-on-surface-variant hover:text-tertiary-fixed transition-colors duration-150 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:text-tertiary-fixed transition-colors duration-150">
+<span class="material-symbols-outlined">wifi_tethering</span>
+</button>
+</div>
+<button class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+<img alt="User profile" class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A small, circular avatar portrait of a professional corporate user in a dark mode interface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjF92-3-e8O1Dw29Bi5DMQSarfoO_JMbTN8EK1ccqCYy7tGLUU_7uHTOg3rzwePPsFvCcWG60HMtUxl66l7eeG-DOz6HaVUWJ3zwTkiwZ1tORbhy8A4CKWLa-FY-uu62-tVoLJOBAZ6Dt0dR8uXKniwpvWpS4Ej7Pkwly85_G1RlTIBbIlt_vmdAlO-mWfQar4nxbERpJqF-DzHhkjDX6koE30htWNLXSluksqdvBXyu6jacs7AHY"/>
+<span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Content -->
+<main class="flex-1 overflow-y-auto p-container_padding bg-background w-full">
+<div class="max-w-max_content_width mx-auto space-y-stack_gap_lg">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-headline-md text-headline-md font-semibold text-on-surface tracking-tight">Prescription &amp; Discount Optimization</h2>
+<p class="text-on-surface-variant font-body-lg text-body-md mt-2 max-w-2xl">Leverage causal uplift models to optimally allocate marketing budgets and maximize incremental conversion probability.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 rounded border border-outline-variant text-on-surface hover:bg-surface-variant transition-colors flex items-center gap-2 font-medium text-sm">
+<span class="material-symbols-outlined text-sm">download</span> Export Plan
+                        </button>
+</div>
+</div>
+<!-- Top Section: Controls & Key Metrics -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-gutter">
+<!-- Budget Control Card -->
+<div class="xl:col-span-4 bg-[#1e293b] border border-outline-variant rounded-xl p-6 shadow-sm relative overflow-hidden group hover:border-t-on-tertiary-container transition-all duration-300">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-on-tertiary-container to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<h3 class="font-headline-sm text-lg font-semibold text-on-surface mb-6 flex items-center gap-2 border-b border-outline-variant pb-4">
+<span class="material-symbols-outlined text-on-tertiary-container">tune</span> Optimization Constraints
+                        </h3>
+<div class="space-y-5">
+<div>
+<label class="block text-sm font-medium text-on-surface-variant mb-1.5 font-label-mono">Total Marketing Budget</label>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">$</span>
+<input class="w-full bg-surface-dim border border-outline-variant text-on-surface font-label-mono rounded-lg py-2.5 pl-8 pr-4 focus:border-on-tertiary-container focus:ring-1 focus:ring-on-tertiary-container outline-none transition-all" type="text" value="50,000"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-medium text-on-surface-variant mb-1.5 font-label-mono">Min Discount</label>
+<div class="relative">
+<input class="w-full bg-surface-dim border border-outline-variant text-on-surface font-label-mono rounded-lg py-2.5 px-4 pr-8 focus:border-on-tertiary-container focus:ring-1 focus:ring-on-tertiary-container outline-none transition-all" type="text" value="5"/>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant">%</span>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-on-surface-variant mb-1.5 font-label-mono">Max Discount</label>
+<div class="relative">
+<input class="w-full bg-surface-dim border border-outline-variant text-on-surface font-label-mono rounded-lg py-2.5 px-4 pr-8 focus:border-on-tertiary-container focus:ring-1 focus:ring-on-tertiary-container outline-none transition-all" type="text" value="25"/>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant">%</span>
+</div>
+</div>
+</div>
+<div class="pt-4">
+<button class="w-full bg-[#8b5cf6] text-white font-body-md text-base font-semibold py-3 px-6 rounded-lg hover:brightness-110 active:scale-98 transition-all shadow-md flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">auto_fix_high</span>
+                                    Optimize Allocation
+                                </button>
+</div>
+</div>
+</div>
+<!-- Post-Optimization Metrics -->
+<div class="xl:col-span-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Metric 1 -->
+<div class="bg-[#1e293b] border border-outline-variant rounded-xl p-6 flex flex-col justify-center relative overflow-hidden group hover:border-t-primary transition-all">
+<span class="material-symbols-outlined absolute -bottom-4 -right-4 text-6xl text-surface-container-highest opacity-50 transform rotate-12">account_balance_wallet</span>
+<p class="text-sm font-medium text-on-surface-variant font-label-mono mb-2 uppercase tracking-wide">Allocated Budget</p>
+<div class="flex items-baseline gap-2">
+<h4 class="font-display-lg text-4xl font-bold text-on-surface">$48.2k</h4>
+<span class="text-xs text-primary font-label-mono">/ $50k</span>
+</div>
+<div class="w-full bg-surface-dim h-1 mt-4 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[96.4%] rounded-full"></div>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="bg-[#1e293b] border border-outline-variant rounded-xl p-6 flex flex-col justify-center relative overflow-hidden group hover:border-t-[#8b5cf6] transition-all">
+<div class="absolute inset-0 bg-on-tertiary-container opacity-5"></div>
+<span class="material-symbols-outlined absolute -bottom-4 -right-4 text-6xl text-surface-container-highest opacity-50 transform -rotate-12">trending_up</span>
+<p class="text-sm font-medium text-on-surface-variant font-label-mono mb-2 uppercase tracking-wide flex items-center gap-1">Exp. Incremental Gain <span class="material-symbols-outlined text-xs text-on-tertiary-container">info</span></p>
+<h4 class="font-display-lg text-4xl font-bold text-[#d0bcff]">+$185k</h4>
+<p class="text-xs text-on-surface-variant mt-2 font-label-mono">+12.4% vs Baseline</p>
+</div>
+<!-- Metric 3 -->
+<div class="bg-[#1e293b] border border-outline-variant rounded-xl p-6 flex flex-col justify-center relative overflow-hidden group hover:border-t-[#8b5cf6] transition-all">
+<span class="material-symbols-outlined absolute -bottom-4 -right-4 text-6xl text-surface-container-highest opacity-50 transform rotate-45">rocket_launch</span>
+<p class="text-sm font-medium text-on-surface-variant font-label-mono mb-2 uppercase tracking-wide">Projected ROI</p>
+<h4 class="font-display-lg text-4xl font-bold text-on-surface">380%</h4>
+<div class="mt-2 flex items-center gap-1 text-xs text-[#8b5cf6] font-label-mono bg-on-tertiary-container bg-opacity-10 px-2 py-1 rounded w-fit border border-on-tertiary-container border-opacity-20">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> +45% vs Random
+                            </div>
+</div>
+<!-- Metric 4 -->
+<div class="bg-[#1e293b] border border-outline-variant rounded-xl p-6 flex flex-col justify-center relative overflow-hidden group hover:border-t-primary transition-all">
+<span class="material-symbols-outlined absolute -bottom-4 -right-4 text-6xl text-surface-container-highest opacity-50">group</span>
+<p class="text-sm font-medium text-on-surface-variant font-label-mono mb-2 uppercase tracking-wide">Customers Targeted</p>
+<h4 class="font-display-lg text-4xl font-bold text-on-surface">4,200</h4>
+<p class="text-xs text-on-surface-variant mt-2 font-label-mono">Out of 25,000 eligible</p>
+</div>
+</div>
+</div>
+<!-- Middle Section: Visualizations -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<!-- Chart 1: Optimized vs Random -->
+<div class="bg-[#1e293b] border border-outline-variant rounded-xl p-6 flex flex-col h-[400px]">
+<div class="flex justify-between items-center border-b border-outline-variant pb-4 mb-6">
+<h3 class="font-headline-sm text-base font-semibold text-on-surface">Expected Uplift: Optimized vs Baseline</h3>
+<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-sm">more_horiz</span></button>
+</div>
+<div class="flex-1 relative chart-grid flex items-end justify-around pb-8 pt-4">
+<!-- Y-Axis labels (simulated) -->
+<div class="absolute left-0 top-0 h-full w-8 flex flex-col justify-between text-xs text-on-surface-variant font-label-mono pb-8 text-right opacity-50">
+<span>200k</span>
+<span>150k</span>
+<span>100k</span>
+<span>50k</span>
+<span>0</span>
+</div>
+<!-- Random Bar -->
+<div class="relative w-24 h-[35%] bg-surface-variant border border-outline-variant rounded-t flex items-end justify-center group">
+<div class="absolute -top-8 opacity-0 group-hover:opacity-100 transition-opacity bg-surface-container-highest text-on-surface text-xs font-label-mono px-2 py-1 rounded shadow-lg">$65k</div>
+<div class="w-full bg-gradient-to-t from-transparent to-white opacity-5 h-full rounded-t"></div>
+</div>
+<!-- Broad Targeting Bar -->
+<div class="relative w-24 h-[55%] bg-primary-fixed-dim bg-opacity-30 border border-primary-fixed-dim rounded-t flex items-end justify-center group">
+<div class="absolute -top-8 opacity-0 group-hover:opacity-100 transition-opacity bg-surface-container-highest text-on-surface text-xs font-label-mono px-2 py-1 rounded shadow-lg">$105k</div>
+<div class="w-full bg-gradient-to-t from-transparent to-white opacity-10 h-full rounded-t"></div>
+</div>
+<!-- Optimized Bar -->
+<div class="relative w-24 h-[95%] bg-[#8b5cf6] rounded-t shadow-[0_0_20px_rgba(139,92,246,0.3)] flex items-end justify-center group">
+<div class="absolute -top-8 opacity-0 group-hover:opacity-100 transition-opacity bg-surface-container-highest text-on-surface text-xs font-label-mono px-2 py-1 rounded shadow-lg z-10">$185k</div>
+<div class="w-full bg-gradient-to-t from-transparent to-white opacity-20 h-full rounded-t"></div>
+</div>
+<!-- X-Axis Labels -->
+<div class="absolute bottom-0 w-full flex justify-around text-xs font-label-mono text-on-surface-variant pt-2">
+<span class="w-24 text-center">Random</span>
+<span class="w-24 text-center">Rule-Based</span>
+<span class="w-24 text-center text-[#d0bcff] font-bold">Causal AI</span>
+</div>
+</div>
+</div>
+<!-- Chart 2: Allocation Distribution -->
+<div class="bg-[#1e293b] border border-outline-variant rounded-xl p-6 flex flex-col h-[400px]">
+<div class="flex justify-between items-center border-b border-outline-variant pb-4 mb-6">
+<h3 class="font-headline-sm text-base font-semibold text-on-surface">Discount Tier Allocation</h3>
+<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-sm">more_horiz</span></button>
+</div>
+<div class="flex-1 flex flex-col justify-end gap-3 pb-2">
+<!-- Rows for horizontal bar chart -->
+<div class="flex items-center gap-4">
+<span class="w-12 text-right font-label-mono text-sm text-on-surface-variant">5%</span>
+<div class="flex-1 h-6 bg-surface-dim rounded overflow-hidden relative">
+<div class="absolute top-0 left-0 h-full bg-[#3e495d] w-[15%] rounded"></div>
+</div>
+<span class="w-12 text-left font-label-mono text-xs text-on-surface">630</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="w-12 text-right font-label-mono text-sm text-on-surface-variant">10%</span>
+<div class="flex-1 h-6 bg-surface-dim rounded overflow-hidden relative">
+<div class="absolute top-0 left-0 h-full bg-[#565e74] w-[45%] rounded"></div>
+</div>
+<span class="w-12 text-left font-label-mono text-xs text-on-surface">1,890</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="w-12 text-right font-label-mono text-sm text-on-surface-variant">15%</span>
+<div class="flex-1 h-6 bg-surface-dim rounded overflow-hidden relative">
+<div class="absolute top-0 left-0 h-full bg-[#8b5cf6] w-[25%] rounded shadow-[0_0_10px_rgba(139,92,246,0.2)]"></div>
+</div>
+<span class="w-12 text-left font-label-mono text-xs text-[#d0bcff] font-bold">1,050</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="w-12 text-right font-label-mono text-sm text-on-surface-variant">20%</span>
+<div class="flex-1 h-6 bg-surface-dim rounded overflow-hidden relative">
+<div class="absolute top-0 left-0 h-full bg-[#9162fc] w-[10%] rounded"></div>
+</div>
+<span class="w-12 text-left font-label-mono text-xs text-on-surface">420</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="w-12 text-right font-label-mono text-sm text-on-surface-variant">25%</span>
+<div class="flex-1 h-6 bg-surface-dim rounded overflow-hidden relative">
+<div class="absolute top-0 left-0 h-full bg-[#aeb9d0] w-[5%] rounded"></div>
+</div>
+<span class="w-12 text-left font-label-mono text-xs text-on-surface">210</span>
+</div>
+<!-- Legend -->
+<div class="mt-6 flex justify-center gap-6 border-t border-outline-variant pt-4">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-sm bg-[#8b5cf6]"></div>
+<span class="text-xs font-label-mono text-on-surface-variant">Sweet Spot (Max ROI)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Allocation Table -->
+<div class="bg-[#1e293b] border border-outline-variant rounded-xl overflow-hidden">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<div>
+<h3 class="font-headline-sm text-lg font-semibold text-on-surface">Recommended Allocation Protocol</h3>
+<p class="text-sm text-on-surface-variant mt-1">Top candidates ranked by expected incremental ROI.</p>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">filter_list</span>
+<select class="bg-surface-dim border border-outline-variant text-on-surface text-sm rounded py-1.5 pl-9 pr-8 focus:border-on-tertiary-container outline-none appearance-none">
+<option>Top ROI</option>
+<option>Highest Gain</option>
+<option>Largest Discount</option>
+</select>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead class="bg-surface-dim text-on-surface-variant font-label-mono text-xs uppercase tracking-wider">
+<tr>
+<th class="px-6 py-4 font-medium border-b border-outline-variant">Customer ID</th>
+<th class="px-6 py-4 font-medium border-b border-outline-variant">Base Prob.</th>
+<th class="px-6 py-4 font-medium border-b border-outline-variant">Rec. Discount</th>
+<th class="px-6 py-4 font-medium border-b border-outline-variant">Exp. Gain</th>
+<th class="px-6 py-4 font-medium border-b border-outline-variant text-right">Est. ROI</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant bg-[#1e293b]">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-variant transition-colors group">
+<td class="px-6 py-4 font-label-mono text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#8b5cf6]"></span> USR-8492-AX
+                                    </td>
+<td class="px-6 py-4 font-label-mono text-on-surface-variant">12.4%</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-bold font-label-mono bg-on-tertiary-container bg-opacity-10 text-[#d0bcff] border border-on-tertiary-container border-opacity-20">
+                                            15%
+                                        </span>
+</td>
+<td class="px-6 py-4 font-label-mono text-[#d0bcff] group-hover:text-white transition-colors">+$142.50</td>
+<td class="px-6 py-4 font-label-mono text-right text-on-surface">475%</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-variant transition-colors">
+<td class="px-6 py-4 font-label-mono text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#8b5cf6]"></span> USR-9110-BZ
+                                    </td>
+<td class="px-6 py-4 font-label-mono text-on-surface-variant">8.1%</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-bold font-label-mono bg-on-tertiary-container bg-opacity-10 text-[#d0bcff] border border-on-tertiary-container border-opacity-20">
+                                            20%
+                                        </span>
+</td>
+<td class="px-6 py-4 font-label-mono text-[#d0bcff]">+$128.00</td>
+<td class="px-6 py-4 font-label-mono text-right text-on-surface">426%</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-variant transition-colors">
+<td class="px-6 py-4 font-label-mono text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> USR-3341-CY
+                                    </td>
+<td class="px-6 py-4 font-label-mono text-on-surface-variant">25.0%</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-bold font-label-mono bg-surface-dim text-on-surface-variant border border-outline-variant">
+                                            5%
+                                        </span>
+</td>
+<td class="px-6 py-4 font-label-mono text-primary">+$85.20</td>
+<td class="px-6 py-4 font-label-mono text-right text-on-surface">410%</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-variant transition-colors">
+<td class="px-6 py-4 font-label-mono text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> USR-7729-DQ
+                                    </td>
+<td class="px-6 py-4 font-label-mono text-on-surface-variant">15.5%</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-bold font-label-mono bg-surface-dim text-on-surface-variant border border-outline-variant">
+                                            10%
+                                        </span>
+</td>
+<td class="px-6 py-4 font-label-mono text-primary">+$92.00</td>
+<td class="px-6 py-4 font-label-mono text-right text-on-surface">395%</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-variant transition-colors group">
+<td class="px-6 py-4 font-label-mono text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#8b5cf6]"></span> USR-1024-EW
+                                    </td>
+<td class="px-6 py-4 font-label-mono text-on-surface-variant">5.2%</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-bold font-label-mono bg-on-tertiary-container bg-opacity-10 text-[#d0bcff] border border-on-tertiary-container border-opacity-20">
+                                            25%
+                                        </span>
+</td>
+<td class="px-6 py-4 font-label-mono text-[#d0bcff]">+$115.75</td>
+<td class="px-6 py-4 font-label-mono text-right text-on-surface">385%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-outline-variant flex justify-between items-center bg-surface-dim">
+<span class="text-xs text-on-surface-variant font-label-mono">Showing 1-5 of 4,200 targeted users</span>
+<div class="flex gap-2">
+<button class="px-3 py-1 rounded bg-surface border border-outline-variant text-on-surface-variant opacity-50 cursor-not-allowed text-sm">Prev</button>
+<button class="px-3 py-1 rounded bg-surface border border-outline-variant text-on-surface hover:bg-surface-variant transition-colors text-sm">Next</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

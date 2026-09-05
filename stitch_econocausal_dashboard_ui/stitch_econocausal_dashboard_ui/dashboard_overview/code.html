@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard Overview - EconoCausal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "on-tertiary-fixed-variant": "#5516be",
+                            "secondary": "#bcc7de",
+                            "outline-variant": "#45464d",
+                            "outline": "#909097",
+                            "error": "#ffb4ab",
+                            "on-tertiary": "#3c0091",
+                            "inverse-surface": "#e0e3e5",
+                            "on-error": "#690005",
+                            "tertiary": "#d0bcff",
+                            "surface-tint": "#bec6e0",
+                            "on-surface-variant": "#c6c6cd",
+                            "on-surface": "#e0e3e5",
+                            "surface-bright": "#363a3b",
+                            "secondary-fixed": "#d8e3fb",
+                            "tertiary-fixed": "#e9ddff",
+                            "on-secondary-container": "#aeb9d0",
+                            "primary-container": "#0f172a",
+                            "surface-container-highest": "#323537",
+                            "secondary-fixed-dim": "#bcc7de",
+                            "inverse-primary": "#565e74",
+                            "on-primary-fixed": "#131b2e",
+                            "primary": "#bec6e0",
+                            "surface-dim": "#101415",
+                            "tertiary-fixed-dim": "#d0bcff",
+                            "on-tertiary-fixed": "#23005c",
+                            "on-secondary": "#263143",
+                            "surface-container-low": "#191c1e",
+                            "on-background": "#e0e3e5",
+                            "primary-fixed": "#dae2fd",
+                            "on-error-container": "#ffdad6",
+                            "on-primary-fixed-variant": "#3f465c",
+                            "surface": "#101415",
+                            "on-tertiary-container": "#9162fc",
+                            "surface-container": "#1d2022",
+                            "surface-container-high": "#272a2c",
+                            "background": "#101415",
+                            "tertiary-container": "#1e0052",
+                            "on-secondary-fixed": "#111c2d",
+                            "surface-container-lowest": "#0b0f10",
+                            "secondary-container": "#3e495d",
+                            "inverse-on-surface": "#2d3133",
+                            "error-container": "#93000a",
+                            "surface-variant": "#323537",
+                            "on-primary-container": "#798098",
+                            "primary-fixed-dim": "#bec6e0",
+                            "on-primary": "#283044",
+                            "on-secondary-fixed-variant": "#3c475a"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.125rem",
+                            "lg": "0.25rem",
+                            "xl": "0.5rem",
+                            "full": "0.75rem"
+                    },
+                    "spacing": {
+                            "stack_gap_md": "16px",
+                            "stack_gap_lg": "24px",
+                            "gutter": "24px",
+                            "stack_gap_sm": "8px",
+                            "sidebar_width": "280px",
+                            "container_padding": "32px",
+                            "max_content_width": "1440px"
+                    },
+                    "fontFamily": {
+                            "headline-md-mobile": [
+                                    "Geist"
+                            ],
+                            "body-md": [
+                                    "Inter"
+                            ],
+                            "label-mono": [
+                                    "JetBrains Mono"
+                            ],
+                            "headline-md": [
+                                    "Geist"
+                            ],
+                            "headline-sm": [
+                                    "Geist"
+                            ],
+                            "display-lg": [
+                                    "Geist"
+                            ],
+                            "body-lg": [
+                                    "Inter"
+                            ]
+                    },
+                    "fontSize": {
+                            "headline-md-mobile": [
+                                    "24px",
+                                    {
+                                            "lineHeight": "30px",
+                                            "fontWeight": "600"
+                                    }
+                            ],
+                            "body-md": [
+                                    "16px",
+                                    {
+                                            "lineHeight": "24px",
+                                            "fontWeight": "400"
+                                    }
+                            ],
+                            "label-mono": [
+                                    "13px",
+                                    {
+                                            "lineHeight": "16px",
+                                            "letterSpacing": "0.05em",
+                                            "fontWeight": "500"
+                                    }
+                            ],
+                            "headline-md": [
+                                    "30px",
+                                    {
+                                            "lineHeight": "38px",
+                                            "letterSpacing": "-0.01em",
+                                            "fontWeight": "600"
+                                    }
+                            ],
+                            "headline-sm": [
+                                    "24px",
+                                    {
+                                            "lineHeight": "32px",
+                                            "fontWeight": "600"
+                                    }
+                            ],
+                            "display-lg": [
+                                    "48px",
+                                    {
+                                            "lineHeight": "56px",
+                                            "letterSpacing": "-0.02em",
+                                            "fontWeight": "700"
+                                    }
+                            ],
+                            "body-lg": [
+                                    "18px",
+                                    {
+                                            "lineHeight": "28px",
+                                            "fontWeight": "400"
+                                    }
+                            ]
+                    }
+            },
+                },
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e0e3e5; }
+        .card-border { border: 1px solid #334155; }
+        .card-bg { background-color: #1e293b; }
+        .hover-card:hover { border-top: 1px solid rgba(139, 92, 246, 0.3); }
+    </style>
+</head>
+<body class="bg-primary-container dark text-on-background flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-screen py-gutter bg-primary-container dark:bg-primary-container border-r border-outline-variant fixed left-0 top-0 w-sidebar_width z-40">
+<div class="px-gutter mb-8">
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary-fixed">EconoCausal</h1>
+<p class="font-body-md text-body-md text-on-primary-container opacity-70">Causal AI Dashboard</p>
+</div>
+<button class="mx-gutter mb-8 bg-[#8b5cf6] text-white py-3 rounded-DEFAULT font-body-md font-semibold hover:brightness-110 active:scale-[0.98] transition-all">Run New Analysis</button>
+<nav class="flex-1 flex flex-col gap-2 w-full">
+<a class="text-tertiary dark:text-tertiary border-l-4 border-tertiary font-bold pl-4 py-3 flex items-center gap-3 font-body-md text-body-md w-full bg-on-primary-fixed-variant bg-opacity-20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 font-body-md text-body-md w-full" href="#">
+<span class="material-symbols-outlined" data-icon="cloud_upload">cloud_upload</span>
+                Data Upload
+            </a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 font-body-md text-body-md w-full" href="#">
+<span class="material-symbols-outlined" data-icon="troubleshoot">troubleshoot</span>
+                Causal Analysis
+            </a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 font-body-md text-body-md w-full" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+                Customer Analysis
+            </a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 font-body-md text-body-md w-full" href="#">
+<span class="material-symbols-outlined" data-icon="precision_manufacturing">precision_manufacturing</span>
+                Prescription
+            </a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 font-body-md text-body-md w-full" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+                Optimization
+            </a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 font-body-md text-body-md w-full" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+                Reports
+            </a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 font-body-md text-body-md w-full" href="#">
+<span class="material-symbols-outlined" data-icon="monitor_heart">monitor_heart</span>
+                System Monitoring
+            </a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 font-body-md text-body-md w-full" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-[280px] w-full flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-gutter h-20 bg-surface dark:bg-surface border-b border-outline-variant sticky top-0 z-30">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hidden md:block" data-icon="search">search</span>
+<input class="bg-transparent border-none text-on-surface-variant font-body-md text-body-md focus:ring-0 hidden md:block w-64 placeholder-on-surface-variant/50" placeholder="Search insights..." type="text"/>
+<h1 class="md:hidden font-headline-sm text-headline-sm font-semibold text-on-surface">EconoCausal</h1>
+</div>
+<div class="flex items-center gap-6 text-on-surface-variant">
+<button class="hover:text-tertiary-fixed transition-colors duration-150"><span class="material-symbols-outlined" data-icon="notifications">notifications</span></button>
+<button class="hover:text-tertiary-fixed transition-colors duration-150 flex items-center gap-2"><span class="material-symbols-outlined text-tertiary" data-icon="wifi_tethering">wifi_tethering</span> <span class="text-xs font-label-mono text-tertiary hidden lg:inline">LIVE</span></button>
+<button class="hover:text-tertiary-fixed transition-colors duration-150"><img alt="User profile" class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A professional headshot of a corporate user on a dark sleek background with subtle purple lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjoAj46huzPpVaYJUTVaKaGKZSmlGnd39T6Xzb4ytsfh4c7i6wStbn2PEbrf5rdlOTCNe6KjsTcI4NfTQvIEIQ6dh_LUoXgCIw_5bUH3BEqh4FTBNGtbQDJp_EVohzQqU57lX0P7run6UsKRT6uV5AYwEF5jK8j6xSMuPYdroCGAQDqqDhGry1cYPKpf92uKvLAI8Obj_JR3KJpHLY8ECcVWfpkTHhQuwGCZWIlYaegwUdQdpnWBk"/></button>
+</div>
+</header>
+<!-- Dashboard Canvas -->
+<div class="p-4 md:p-container_padding flex flex-col gap-stack_gap_lg w-full max-w-max_content_width mx-auto">
+<div class="mb-4">
+<h2 class="font-headline-md text-headline-md font-semibold text-on-surface mb-2">Campaign Overview</h2>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-80">Q3 Marketing Intervention Analysis</p>
+</div>
+<!-- KPI Header -->
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-stack_gap_md">
+<div class="card-bg card-border rounded-lg p-4 flex flex-col justify-between hover-card transition-all">
+<span class="font-label-mono text-label-mono text-on-surface-variant opacity-70 mb-2 uppercase tracking-wider">Total Customers</span>
+<span class="font-headline-sm text-headline-sm font-semibold text-on-surface">12,500</span>
+</div>
+<div class="card-bg card-border rounded-lg p-4 flex flex-col justify-between hover-card transition-all">
+<span class="font-label-mono text-label-mono text-on-surface-variant opacity-70 mb-2 uppercase tracking-wider">Treatment</span>
+<span class="font-headline-sm text-headline-sm font-semibold text-on-surface">6,200</span>
+</div>
+<div class="card-bg card-border rounded-lg p-4 flex flex-col justify-between hover-card transition-all">
+<span class="font-label-mono text-label-mono text-on-surface-variant opacity-70 mb-2 uppercase tracking-wider">Control</span>
+<span class="font-headline-sm text-headline-sm font-semibold text-on-surface">6,300</span>
+</div>
+<div class="card-bg card-border rounded-lg p-4 flex flex-col justify-between hover-card transition-all border-l-2 border-l-[#8b5cf6]">
+<span class="font-label-mono text-label-mono text-tertiary opacity-90 mb-2 uppercase tracking-wider flex items-center gap-1">ATE <span class="material-symbols-outlined text-[14px]" data-icon="info">info</span></span>
+<span class="font-headline-sm text-headline-sm font-semibold text-white">+$4.20</span>
+</div>
+<div class="card-bg card-border rounded-lg p-4 flex flex-col justify-between hover-card transition-all">
+<span class="font-label-mono text-label-mono text-on-surface-variant opacity-70 mb-2 uppercase tracking-wider">Budget</span>
+<span class="font-headline-sm text-headline-sm font-semibold text-on-surface">$50k</span>
+</div>
+<div class="card-bg card-border rounded-lg p-4 flex flex-col justify-between hover-card transition-all">
+<span class="font-label-mono text-label-mono text-on-surface-variant opacity-70 mb-2 uppercase tracking-wider">Exp Revenue</span>
+<span class="font-headline-sm text-headline-sm font-semibold text-on-surface">$1.2M</span>
+</div>
+<div class="card-bg card-border rounded-lg p-4 flex flex-col justify-between hover-card transition-all">
+<span class="font-label-mono text-label-mono text-on-surface-variant opacity-70 mb-2 uppercase tracking-wider">Exp ROI</span>
+<span class="font-headline-sm text-headline-sm font-semibold text-tertiary">240%</span>
+</div>
+</div>
+<!-- Main Bento Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-stack_gap_lg">
+<!-- ITE Distribution (Spans 2 cols) -->
+<div class="lg:col-span-2 card-bg card-border rounded-lg flex flex-col hover-card transition-all overflow-hidden h-[400px]">
+<div class="p-5 border-b border-[#334155] flex justify-between items-center">
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface">Individual Treatment Effect (ITE) Distribution</h3>
+<button class="text-on-surface-variant hover:text-white"><span class="material-symbols-outlined" data-icon="more_vert">more_vert</span></button>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-end relative">
+<!-- Placeholder for Plotly Chart via CSS -->
+<div class="absolute inset-x-6 top-6 bottom-12 border-l border-b border-[#334155]/50 flex items-end">
+<!-- Positive Bars -->
+<div class="w-1/12 h-[20%] bg-[#8b5cf6] mx-1 rounded-t opacity-80"></div>
+<div class="w-1/12 h-[45%] bg-[#8b5cf6] mx-1 rounded-t opacity-90"></div>
+<div class="w-1/12 h-[75%] bg-[#8b5cf6] mx-1 rounded-t"></div>
+<div class="w-1/12 h-[95%] bg-[#8b5cf6] mx-1 rounded-t"></div>
+<div class="w-1/12 h-[80%] bg-[#8b5cf6] mx-1 rounded-t opacity-90"></div>
+<div class="w-1/12 h-[50%] bg-[#8b5cf6] mx-1 rounded-t opacity-80"></div>
+<div class="w-1/12 h-[30%] bg-[#8b5cf6] mx-1 rounded-t opacity-70"></div>
+<!-- Negative Bars -->
+<div class="w-1/12 h-[15%] bg-[#f43f5e] mx-1 rounded-t opacity-60"></div>
+<div class="w-1/12 h-[25%] bg-[#f43f5e] mx-1 rounded-t opacity-70"></div>
+<div class="w-1/12 h-[10%] bg-[#f43f5e] mx-1 rounded-t opacity-50"></div>
+<div class="w-1/12 h-[5%] bg-[#f43f5e] mx-1 rounded-t opacity-40"></div>
+</div>
+<div class="flex justify-between w-full mt-2 font-label-mono text-[10px] text-on-surface-variant opacity-70">
+<span>-$2.00</span>
+<span>$0.00</span>
+<span>+$2.00</span>
+<span>+$4.00</span>
+<span>+$6.00</span>
+<span>+$8.00</span>
+</div>
+</div>
+</div>
+<!-- Treatment Categories Donut -->
+<div class="lg:col-span-1 card-bg card-border rounded-lg flex flex-col hover-card transition-all h-[400px]">
+<div class="p-5 border-b border-[#334155]">
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface">Effect Categories</h3>
+</div>
+<div class="p-6 flex-1 flex flex-col items-center justify-center relative">
+<!-- CSS Donut Representation -->
+<div class="w-48 h-48 rounded-full border-[16px] border-[#1e293b] relative overflow-hidden" style="background: conic-gradient(#8b5cf6 0% 45%, #10b981 45% 65%, #f43f5e 65% 85%, #64748b 85% 100%);">
+<div class="absolute inset-4 bg-[#1e293b] rounded-full flex items-center justify-center flex-col">
+<span class="font-headline-md text-headline-md text-white font-bold">45%</span>
+<span class="font-label-mono text-[10px] text-on-surface-variant">Persuadable</span>
+</div>
+</div>
+<div class="w-full mt-6 flex flex-col gap-2 font-label-mono text-label-mono text-xs">
+<div class="flex justify-between items-center"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#8b5cf6]"></span><span class="text-on-surface-variant">Persuadable</span></div><span class="text-white">45%</span></div>
+<div class="flex justify-between items-center"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#10b981]"></span><span class="text-on-surface-variant">Sure Thing</span></div><span class="text-white">20%</span></div>
+<div class="flex justify-between items-center"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#f43f5e]"></span><span class="text-on-surface-variant">Lost Cause</span></div><span class="text-white">20%</span></div>
+<div class="flex justify-between items-center"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#64748b]"></span><span class="text-on-surface-variant">Do Not Disturb</span></div><span class="text-white">15%</span></div>
+</div>
+</div>
+</div>
+<!-- Curves & Model Validation Row -->
+<div class="lg:col-span-3 grid grid-cols-1 lg:grid-cols-3 gap-stack_gap_lg h-[350px]">
+<!-- Uplift Curve -->
+<div class="card-bg card-border rounded-lg flex flex-col hover-card transition-all">
+<div class="p-4 border-b border-[#334155]">
+<h3 class="font-body-md text-body-md font-semibold text-on-surface">Uplift Curve</h3>
+</div>
+<div class="p-4 flex-1 relative flex items-end">
+<div class="w-full h-full border-l border-b border-[#334155]/50 relative overflow-hidden">
+<!-- Abstract Area Line -->
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0,100 Q30,80 50,40 T100,10" fill="none" stroke="#8b5cf6" stroke-width="2"></path>
+<path d="M0,100 Q30,80 50,40 T100,10 L100,100 Z" fill="rgba(139, 92, 246, 0.1)"></path>
+<line stroke="#64748b" stroke-dasharray="4" stroke-width="1" x1="0" x2="100" y1="100" y2="0"></line>
+</svg>
+</div>
+</div>
+</div>
+<!-- Qini Curve -->
+<div class="card-bg card-border rounded-lg flex flex-col hover-card transition-all">
+<div class="p-4 border-b border-[#334155]">
+<h3 class="font-body-md text-body-md font-semibold text-on-surface">Qini Curve</h3>
+</div>
+<div class="p-4 flex-1 relative flex items-end">
+<div class="w-full h-full border-l border-b border-[#334155]/50 relative overflow-hidden">
+<!-- Abstract Area Line -->
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0,100 C20,90 40,60 60,30 S80,15 100,5" fill="none" stroke="#8b5cf6" stroke-width="2"></path>
+<path d="M0,100 C20,90 40,60 60,30 S80,15 100,5 L100,100 Z" fill="rgba(139, 92, 246, 0.1)"></path>
+<line stroke="#64748b" stroke-dasharray="4" stroke-width="1" x1="0" x2="100" y1="100" y2="0"></line>
+</svg>
+</div>
+</div>
+</div>
+<!-- Model Performance -->
+<div class="card-bg card-border rounded-lg flex flex-col hover-card transition-all">
+<div class="p-4 border-b border-[#334155]">
+<h3 class="font-body-md text-body-md font-semibold text-on-surface">Model Health</h3>
+</div>
+<div class="p-5 flex-1 flex flex-col justify-center gap-4">
+<div class="flex justify-between items-center bg-[#0f172a] p-3 rounded-md border border-[#334155]/50">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="font-body-md text-body-md text-on-surface-variant text-sm">DML Model Status</span>
+</div>
+<span class="font-label-mono text-xs text-white">READY</span>
+</div>
+<div class="flex justify-between items-center bg-[#0f172a] p-3 rounded-md border border-[#334155]/50">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="font-body-md text-body-md text-on-surface-variant text-sm">ITE Generation</span>
+</div>
+<span class="font-label-mono text-xs text-white">COMPLETE</span>
+</div>
+<div class="flex justify-between items-center bg-[#0f172a] p-3 rounded-md border border-[#334155]/50">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="font-body-md text-body-md text-on-surface-variant text-sm">Propensity Score</span>
+</div>
+<span class="font-label-mono text-xs text-white">VALIDATED</span>
+</div>
+<div class="flex justify-between items-center bg-[#0f172a] p-3 rounded-md border border-[#334155]/50">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-[#f59e0b]"></span>
+<span class="font-body-md text-body-md text-on-surface-variant text-sm">Causal Validation</span>
+</div>
+<span class="font-label-mono text-xs text-[#f59e0b]">WARN: OVERFIT</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
