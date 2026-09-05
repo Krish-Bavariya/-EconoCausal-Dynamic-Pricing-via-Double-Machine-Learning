@@ -1,0 +1,17 @@
+{
+  "ate": 0.004868,
+  "ate_pct": 0.4868,
+  "total_customers": 64000,
+  "segment_counts": {
+    "Sure Things / Lost Causes": 60222,
+    "Persuadables": 3778
+  },
+  "persuadables_count": 3778,
+  "persuadables_pct": 5.9,
+  "expected_gain_usd": 26761.48,
+  "random_baseline_usd": 15577.19,
+  "saving_usd": 11184.29,
+  "roi_pct": 35.42,
+  "robustness_passed": null,
+  "narrative_text": "The causal model identified an Average Treatment Effect (ATE) of +0.0049 — meaning a discount increases purchase probability by 0.5 percentage points on average.\n\nOut of 64,000 customers analysed:\n  • 3,778 are Persuadables (5.9%) — the best targets for discounts.\n  • 60,222 are Sure Things — likely to buy without a discount.\n  • 60,222 are Lost Causes — discounts are wasted on them.\n  • 0 are Sleeping Dogs — discounts may discourage purchase.\n\nTargeting only Persuadables is estimated to generate $26,761.48 in incremental revenue, compared to $15,577.19 under random targeting — a saving of $11,184.29."
+}
