@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EconoCausal - Data Upload</title>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "secondary": "#bcc7de",
+                        "outline-variant": "#45464d",
+                        "outline": "#909097",
+                        "error": "#ffb4ab",
+                        "on-tertiary": "#3c0091",
+                        "inverse-surface": "#e0e3e5",
+                        "on-error": "#690005",
+                        "tertiary": "#d0bcff",
+                        "surface-tint": "#bec6e0",
+                        "on-surface-variant": "#c6c6cd",
+                        "on-surface": "#e0e3e5",
+                        "surface-bright": "#363a3b",
+                        "secondary-fixed": "#d8e3fb",
+                        "tertiary-fixed": "#e9ddff",
+                        "on-secondary-container": "#aeb9d0",
+                        "primary-container": "#0f172a",
+                        "surface-container-highest": "#323537",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "inverse-primary": "#565e74",
+                        "on-primary-fixed": "#131b2e",
+                        "primary": "#bec6e0",
+                        "surface-dim": "#101415",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "on-tertiary-fixed": "#23005c",
+                        "on-secondary": "#263143",
+                        "surface-container-low": "#191c1e",
+                        "on-background": "#e0e3e5",
+                        "primary-fixed": "#dae2fd",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "surface": "#101415",
+                        "on-tertiary-container": "#9162fc",
+                        "surface-container": "#1d2022",
+                        "surface-container-high": "#272a2c",
+                        "background": "#101415",
+                        "tertiary-container": "#1e0052",
+                        "on-secondary-fixed": "#111c2d",
+                        "surface-container-lowest": "#0b0f10",
+                        "secondary-container": "#3e495d",
+                        "inverse-on-surface": "#2d3133",
+                        "error-container": "#93000a",
+                        "surface-variant": "#323537",
+                        "on-primary-container": "#798098",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-primary": "#283044",
+                        "on-secondary-fixed-variant": "#3c475a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack_gap_md": "16px",
+                        "stack_gap_lg": "24px",
+                        "gutter": "24px",
+                        "stack_gap_sm": "8px",
+                        "sidebar_width": "280px",
+                        "container_padding": "32px",
+                        "max_content_width": "1440px"
+                    },
+                    "fontFamily": {
+                        "headline-md-mobile": ["Geist"],
+                        "body-md": ["Inter"],
+                        "label-mono": ["JetBrains Mono"],
+                        "headline-md": ["Geist"],
+                        "headline-sm": ["Geist"],
+                        "display-lg": ["Geist"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md-mobile": ["24px", { "lineHeight": "30px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-mono": ["13px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-md": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Base typography defaults */
+        body {
+            @apply font-body-md text-body-md bg-background text-on-background;
+        }
+        /* Custom scrollbar for data tables */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: theme('colors.surface-container');
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: theme('colors.outline-variant');
+            border-radius: theme('borderRadius.full');
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.outline');
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen w-full relative">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-sidebar_width flex flex-col h-screen py-gutter bg-primary-container dark:bg-primary-container border-r border-outline-variant z-40">
+<!-- Header -->
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-8 h-8 bg-tertiary rounded flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-on-tertiary" style="font-variation-settings: 'FILL' 1;">analytics</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary-fixed">EconoCausal</h1>
+<p class="font-label-mono text-label-mono text-on-primary-container opacity-80 mt-1">Causal AI Dashboard</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex-1 flex flex-col gap-1 px-3">
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="text-tertiary dark:text-tertiary border-l-4 border-tertiary font-bold pl-4 py-3 flex items-center gap-3 bg-on-primary-fixed-variant/30 rounded-r-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cloud_upload</span>
+                Data Upload
+            </a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">troubleshoot</span>
+                Causal Analysis
+            </a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">group</span>
+                Customer Analysis
+            </a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">precision_manufacturing</span>
+                Prescription
+            </a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">insights</span>
+                Optimization
+            </a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">assessment</span>
+                Reports
+            </a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">monitor_heart</span>
+                System Monitoring
+            </a>
+<a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 rounded-lg mt-auto" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</nav>
+<!-- CTA -->
+<div class="px-5 mt-6">
+<button class="w-full bg-tertiary text-on-tertiary-fixed font-bold py-3 rounded-lg hover:bg-tertiary-fixed-dim transition-colors duration-200 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add</span>
+                Run New Analysis
+            </button>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<div class="ml-sidebar_width min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-gutter h-20 bg-surface dark:bg-surface border-b border-outline-variant docked top-0 sticky z-50">
+<!-- Search -->
+<div class="flex-1 max-w-md relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-70">search</span>
+<input class="w-full bg-surface-container border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-on-surface focus:outline-none focus:border-tertiary focus:ring-1 focus:ring-tertiary transition-colors" placeholder="Search datasets, reports..." type="text"/>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:text-tertiary-fixed transition-colors duration-150 rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-tertiary-fixed transition-colors duration-150 rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined">wifi_tethering</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-tertiary-fixed transition-colors duration-150 rounded-full hover:bg-surface-variant ml-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 p-container_padding max-w-max_content_width w-full mx-auto">
+<!-- Page Header & Actions -->
+<div class="flex justify-between items-end mb-stack_gap_lg">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-surface tracking-tight mb-2">Data Management</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Upload and validate your campaign datasets.</p>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-2 rounded-lg border border-outline-variant text-on-surface font-body-md text-body-md font-medium hover:bg-surface-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">fact_check</span>
+                        Validate Dataset
+                    </button>
+<button class="px-6 py-2 rounded-lg bg-tertiary text-on-tertiary-fixed font-body-md text-body-md font-bold hover:brightness-110 active:scale-95 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined">play_arrow</span>
+                        Run Causal Analysis
+                    </button>
+</div>
+</div>
+<!-- Main Grid Layout -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Upload Area (Left col, span 8) -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container border border-outline-variant rounded-xl p-stack_gap_lg flex flex-col relative group">
+<!-- Subtle inner glow on hover simulated by absolute border -->
+<div class="absolute inset-0 rounded-xl border-t border-tertiary opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none"></div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-6 pb-4 border-b border-outline-variant">Dataset Upload</h3>
+<!-- Drop Zone -->
+<div class="border-2 border-dashed border-outline-variant bg-surface rounded-xl p-8 flex flex-col items-center justify-center text-center transition-colors hover:border-tertiary/50 hover:bg-surface-variant/30 cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center mb-4 text-tertiary">
+<span class="material-symbols-outlined text-4xl">cloud_upload</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface mb-2">Drag and drop your file here</p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Supported formats: CSV, Parquet (Max 500MB)</p>
+<button class="px-6 py-2 rounded-lg border border-outline-variant text-on-surface hover:bg-surface-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">folder_open</span>
+                            Browse File
+                        </button>
+</div>
+<!-- Mock Uploaded File State -->
+<div class="mt-6 p-4 rounded-lg bg-primary-container border border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-tertiary text-3xl">csv</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface font-medium">campaign_v4.csv</p>
+<div class="flex items-center gap-3 font-label-mono text-label-mono text-on-surface-variant mt-1">
+<span>2.4 MB</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>50k rows</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>12 columns</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary font-label-mono text-label-mono text-xs flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span> Ready
+                            </span>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Validation Panel (Right col, span 4) -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container border border-outline-variant rounded-xl p-stack_gap_lg flex flex-col relative group">
+<div class="absolute inset-0 rounded-xl border-t border-tertiary opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none"></div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-6 pb-4 border-b border-outline-variant flex items-center justify-between">
+                        Validation Status
+                        <span class="material-symbols-outlined text-outline">info</span>
+</h3>
+<div class="flex flex-col gap-4">
+<!-- Item 1: Schema -->
+<div class="p-4 rounded-lg bg-surface border border-outline-variant flex items-start justify-between">
+<div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-1">Schema Check</p>
+<p class="font-headline-sm text-headline-sm text-on-surface">Valid</p>
+</div>
+<span class="material-symbols-outlined text-primary text-2xl">check_circle</span>
+</div>
+<!-- Item 2: Missing Values -->
+<div class="p-4 rounded-lg bg-surface border border-outline-variant flex items-start justify-between">
+<div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-1">Missing Values</p>
+<p class="font-headline-sm text-headline-sm text-on-surface">None</p>
+</div>
+<span class="material-symbols-outlined text-primary text-2xl">check_circle</span>
+</div>
+<!-- Item 3: Duplicates (Warning) -->
+<div class="p-4 rounded-lg bg-error-container/10 border border-error/30 flex items-start justify-between">
+<div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-1">Duplicates</p>
+<p class="font-headline-sm text-headline-sm text-error">52 found</p>
+</div>
+<span class="material-symbols-outlined text-error text-2xl">warning</span>
+</div>
+</div>
+<div class="mt-auto pt-6">
+<button class="w-full py-2 rounded-lg border border-error/50 text-error hover:bg-error/10 transition-colors font-body-md text-body-md flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">filter_alt_off</span>
+                            Clean Duplicates
+                        </button>
+</div>
+</div>
+<!-- Data Preview Table (Full width, span 12) -->
+<div class="col-span-12 bg-surface-container border border-outline-variant rounded-xl p-stack_gap_lg mt-stack_gap_md relative group overflow-hidden">
+<div class="absolute inset-0 rounded-xl border-t border-tertiary opacity-0 group-hover:opacity-30 transition-opacity pointer-events-none"></div>
+<div class="flex items-center justify-between mb-6 pb-4 border-b border-outline-variant">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Data Preview</h3>
+<span class="font-label-mono text-label-mono text-on-surface-variant">Showing top 5 of 50,000 rows</span>
+</div>
+<div class="overflow-x-auto custom-scrollbar pb-2">
+<table class="w-full text-left border-collapse whitespace-nowrap">
+<thead>
+<tr>
+<th class="p-4 border-b border-outline-variant font-label-mono text-label-mono text-on-surface-variant bg-surface/50">Customer ID</th>
+<th class="p-4 border-b border-outline-variant font-label-mono text-label-mono text-on-surface-variant bg-surface/50">Treatment (0/1)</th>
+<th class="p-4 border-b border-outline-variant font-label-mono text-label-mono text-on-surface-variant bg-surface/50">Outcome (Purchase)</th>
+<th class="p-4 border-b border-outline-variant font-label-mono text-label-mono text-on-surface-variant bg-surface/50">Age</th>
+<th class="p-4 border-b border-outline-variant font-label-mono text-label-mono text-on-surface-variant bg-surface/50">Region</th>
+<th class="p-4 border-b border-outline-variant font-label-mono text-label-mono text-on-surface-variant bg-surface/50">Last Purchase Days</th>
+</tr>
+</thead>
+<tbody class="font-label-mono text-label-mono text-on-surface">
+<tr class="hover:bg-surface-variant/30 transition-colors border-b border-outline-variant/30">
+<td class="p-4">CUST-8901</td>
+<td class="p-4 text-tertiary font-bold">1</td>
+<td class="p-4"><span class="px-2 py-1 bg-primary/10 text-primary border border-primary/20 rounded">Purchase</span></td>
+<td class="p-4">34</td>
+<td class="p-4">North America</td>
+<td class="p-4 text-right">12</td>
+</tr>
+<tr class="hover:bg-surface-variant/30 transition-colors border-b border-outline-variant/30">
+<td class="p-4">CUST-8902</td>
+<td class="p-4 text-on-surface-variant">0</td>
+<td class="p-4 text-on-surface-variant">No Purchase</td>
+<td class="p-4">45</td>
+<td class="p-4">EMEA</td>
+<td class="p-4 text-right">89</td>
+</tr>
+<tr class="hover:bg-surface-variant/30 transition-colors border-b border-outline-variant/30">
+<td class="p-4">CUST-8903</td>
+<td class="p-4 text-tertiary font-bold">1</td>
+<td class="p-4 text-on-surface-variant">No Purchase</td>
+<td class="p-4">28</td>
+<td class="p-4">APAC</td>
+<td class="p-4 text-right">4</td>
+</tr>
+<tr class="hover:bg-surface-variant/30 transition-colors border-b border-outline-variant/30">
+<td class="p-4">CUST-8904</td>
+<td class="p-4 text-on-surface-variant">0</td>
+<td class="p-4"><span class="px-2 py-1 bg-primary/10 text-primary border border-primary/20 rounded">Purchase</span></td>
+<td class="p-4">52</td>
+<td class="p-4">North America</td>
+<td class="p-4 text-right">120</td>
+</tr>
+<tr class="hover:bg-surface-variant/30 transition-colors">
+<td class="p-4">CUST-8905</td>
+<td class="p-4 text-tertiary font-bold">1</td>
+<td class="p-4"><span class="px-2 py-1 bg-primary/10 text-primary border border-primary/20 rounded">Purchase</span></td>
+<td class="p-4">31</td>
+<td class="p-4">EMEA</td>
+<td class="p-4 text-right">18</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EconoCausal - System Monitoring &amp; Reports</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed-variant": "#5516be",
+                      "secondary": "#bcc7de",
+                      "outline-variant": "#45464d",
+                      "outline": "#909097",
+                      "error": "#ffb4ab",
+                      "on-tertiary": "#3c0091",
+                      "inverse-surface": "#e0e3e5",
+                      "on-error": "#690005",
+                      "tertiary": "#d0bcff",
+                      "surface-tint": "#bec6e0",
+                      "on-surface-variant": "#c6c6cd",
+                      "on-surface": "#e0e3e5",
+                      "surface-bright": "#363a3b",
+                      "secondary-fixed": "#d8e3fb",
+                      "tertiary-fixed": "#e9ddff",
+                      "on-secondary-container": "#aeb9d0",
+                      "primary-container": "#0f172a",
+                      "surface-container-highest": "#323537",
+                      "secondary-fixed-dim": "#bcc7de",
+                      "inverse-primary": "#565e74",
+                      "on-primary-fixed": "#131b2e",
+                      "primary": "#bec6e0",
+                      "surface-dim": "#101415",
+                      "tertiary-fixed-dim": "#d0bcff",
+                      "on-tertiary-fixed": "#23005c",
+                      "on-secondary": "#263143",
+                      "surface-container-low": "#191c1e",
+                      "on-background": "#e0e3e5",
+                      "primary-fixed": "#dae2fd",
+                      "on-error-container": "#ffdad6",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "surface": "#101415",
+                      "on-tertiary-container": "#9162fc",
+                      "surface-container": "#1d2022",
+                      "surface-container-high": "#272a2c",
+                      "background": "#101415",
+                      "tertiary-container": "#1e0052",
+                      "on-secondary-fixed": "#111c2d",
+                      "surface-container-lowest": "#0b0f10",
+                      "secondary-container": "#3e495d",
+                      "inverse-on-surface": "#2d3133",
+                      "error-container": "#93000a",
+                      "surface-variant": "#323537",
+                      "on-primary-container": "#798098",
+                      "primary-fixed-dim": "#bec6e0",
+                      "on-primary": "#283044",
+                      "on-secondary-fixed-variant": "#3c475a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "stack_gap_md": "16px",
+                      "stack_gap_lg": "24px",
+                      "gutter": "24px",
+                      "stack_gap_sm": "8px",
+                      "sidebar_width": "280px",
+                      "container_padding": "32px",
+                      "max_content_width": "1440px"
+              },
+              "fontFamily": {
+                      "headline-md-mobile": ["Geist"],
+                      "body-md": ["Inter"],
+                      "label-mono": ["JetBrains Mono"],
+                      "headline-md": ["Geist"],
+                      "headline-sm": ["Geist"],
+                      "display-lg": ["Geist"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-md-mobile": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-mono": ["13px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-md": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        /* Base Geist fallback if not loaded */
+        @font-face {
+            font-family: 'Geist';
+            src: local('Inter'); /* Fallback to Inter for rendering purposes here */
+        }
+        
+        .card-surface {
+            background-color: #1e293b; /* Using explicit hex from style guide for cards */
+            border: 1px solid #334155;
+        }
+        
+        .card-hover-effect:hover {
+            border-top: 1px solid rgba(139, 92, 246, 0.3); /* Tertiary color #8b5cf6 at 30% */
+        }
+        
+        .btn-primary {
+            background-color: #8b5cf6;
+            color: white;
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            filter: brightness(1.1);
+        }
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid #334155;
+            color: #e0e3e5; /* on-surface */
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover {
+            background-color: rgba(255,255,255,0.05);
+        }
+        .btn-secondary:active {
+            transform: scale(0.98);
+        }
+        
+        /* Ambient Modal Shadow (unused in standard dashboard but defined in rules) */
+        .ambient-shadow {
+            box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Causal specific charts logic (simulated with CSS/HTML here) */
+        .chart-pad {
+            padding: 24px;
+        }
+    </style>
+</head>
+<body class="bg-primary-container text-on-background font-body-md text-body-md antialiased overflow-x-hidden min-h-screen">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full w-sidebar_width bg-primary-container dark:bg-primary-container border-r border-outline-variant flex flex-col h-screen py-gutter z-40">
+<!-- Brand Header -->
+<div class="px-6 pb-8 border-b border-outline-variant mb-6 flex items-center gap-4">
+<div class="w-10 h-10 rounded-DEFAULT bg-tertiary flex items-center justify-center text-on-tertiary font-bold text-xl">
+                E
+            </div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary-fixed">EconoCausal</h1>
+<p class="font-label-mono text-label-mono text-on-surface-variant">Causal AI Dashboard</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 overflow-y-auto w-full">
+<ul class="space-y-2">
+<!-- Inactive Tabs -->
+<li><a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200" href="#"><span class="material-symbols-outlined">dashboard</span> Dashboard</a></li>
+<li><a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200" href="#"><span class="material-symbols-outlined">cloud_upload</span> Data Upload</a></li>
+<li><a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200" href="#"><span class="material-symbols-outlined">troubleshoot</span> Causal Analysis</a></li>
+<li><a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200" href="#"><span class="material-symbols-outlined">group</span> Customer Analysis</a></li>
+<li><a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200" href="#"><span class="material-symbols-outlined">precision_manufacturing</span> Prescription</a></li>
+<li><a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200" href="#"><span class="material-symbols-outlined">insights</span> Optimization</a></li>
+<li><a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200" href="#"><span class="material-symbols-outlined">assessment</span> Reports</a></li>
+<!-- Active Tab -->
+<li><a class="text-tertiary dark:text-tertiary border-l-4 border-tertiary font-bold pl-4 py-3 flex items-center gap-3 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200 active:scale-[0.98] transition-all" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">monitor_heart</span> System Monitoring</a></li>
+<!-- Inactive Tab -->
+<li><a class="text-on-primary-container dark:text-on-primary-container pl-5 py-3 flex items-center gap-3 opacity-70 hover:bg-on-primary-fixed-variant hover:text-tertiary-fixed-dim transition-colors duration-200" href="#"><span class="material-symbols-outlined">settings</span> Settings</a></li>
+</ul>
+</div>
+<!-- CTA -->
+<div class="px-6 pt-6">
+<button class="w-full btn-primary py-3 rounded-DEFAULT font-label-mono text-label-mono flex items-center justify-center gap-2 shadow-none">
+<span class="material-symbols-outlined text-sm">add</span>
+                Run New Analysis
+            </button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="ml-sidebar_width flex flex-col min-h-screen w-[calc(100%-280px)]">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface border-b border-outline-variant docked full-width top-0 sticky z-50 flex justify-between items-center w-full px-gutter h-20">
+<!-- Search -->
+<div class="flex-1 flex items-center">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+<input class="w-full bg-surface-container border border-outline-variant rounded-DEFAULT pl-10 pr-4 py-2 text-on-surface font-body-md focus:outline-none focus:border-tertiary focus:ring-1 focus:ring-tertiary transition-colors" placeholder="Search systems or reports..." type="text"/>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-6">
+<button class="text-on-surface-variant hover:text-tertiary-fixed transition-colors duration-150 active:opacity-80 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:text-tertiary-fixed transition-colors duration-150 active:opacity-80">
+<span class="material-symbols-outlined">wifi_tethering</span>
+</button>
+<button class="text-on-surface-variant hover:text-tertiary-fixed transition-colors duration-150 active:opacity-80">
+<span class="material-symbols-outlined text-3xl">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Dashboard Canvas -->
+<div class="flex-1 p-container_padding max-w-max_content_width w-full mx-auto">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-stack_gap_lg">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-surface">System Monitoring</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2">Real-time causal engine health and performance metrics.</p>
+</div>
+<div class="flex gap-4 items-center">
+<div class="flex items-center gap-2 text-on-surface-variant font-label-mono text-label-mono">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+                        Engine Status: Live
+                    </div>
+</div>
+</div>
+<!-- Monitoring Grid -->
+<div class="grid grid-cols-12 gap-gutter mb-12">
+<!-- API Health: Latency -->
+<div class="col-span-4 card-surface rounded-lg p-6 flex flex-col justify-between card-hover-effect transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary">speed</span> Latency
+                        </h3>
+<span class="font-label-mono text-label-mono text-secondary bg-secondary-container px-2 py-1 rounded">p99</span>
+</div>
+<div>
+<div class="font-display-lg text-display-lg text-on-surface">42<span class="text-headline-md text-on-surface-variant">ms</span></div>
+<div class="w-full h-12 mt-4 flex items-end gap-1 opacity-80">
+<!-- Simulated sparkline -->
+<div class="w-full bg-[#334155]/50 h-full relative rounded-sm overflow-hidden">
+<svg class="absolute bottom-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0,80 L10,75 L20,85 L30,60 L40,65 L50,40 L60,45 L70,30 L80,35 L90,20 L100,25 L100,100 L0,100 Z" fill="rgba(139, 92, 246, 0.1)" stroke="#8b5cf6" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</div>
+</div>
+<!-- API Health: Success Rate -->
+<div class="col-span-4 card-surface rounded-lg p-6 flex flex-col justify-between card-hover-effect transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary">check_circle</span> Success Rate
+                        </h3>
+<span class="font-label-mono text-label-mono text-secondary bg-secondary-container px-2 py-1 rounded">24h</span>
+</div>
+<div>
+<div class="font-display-lg text-display-lg text-on-surface">99.9<span class="text-headline-md text-on-surface-variant">%</span></div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Zero significant downtime events detected.</p>
+</div>
+</div>
+<!-- Model Lineage -->
+<div class="col-span-4 card-surface rounded-lg p-6 card-hover-effect transition-all duration-300">
+<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2 border-b border-[#334155] pb-3 mb-4">
+<span class="material-symbols-outlined text-tertiary">account_tree</span> Model Lineage
+                    </h3>
+<ul class="space-y-4">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary mt-0.5 text-xl">commit</span>
+<div>
+<div class="font-label-mono text-label-mono text-on-surface">Active Version</div>
+<div class="font-headline-sm text-headline-sm text-tertiary">v2.1.0</div>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-on-surface-variant mt-0.5 text-xl">dataset</span>
+<div>
+<div class="font-label-mono text-label-mono text-on-surface">Training Corpus</div>
+<div class="font-body-md text-body-md text-on-surface-variant">1.2M Records</div>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-on-surface-variant mt-0.5 text-xl">update</span>
+<div>
+<div class="font-label-mono text-label-mono text-on-surface">Last Retrained</div>
+<div class="font-body-md text-body-md text-on-surface-variant">4 hours ago</div>
+</div>
+</li>
+</ul>
+</div>
+<!-- Data Drift Detection (Full Width) -->
+<div class="col-span-12 card-surface rounded-lg p-6 border-l-4 border-l-error card-hover-effect transition-all duration-300">
+<div class="flex justify-between items-start mb-6 border-b border-[#334155] pb-4">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-error">warning</span> Data Drift Warning
+                            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Detected significant distribution shift in causal features.</p>
+</div>
+<button class="btn-secondary px-4 py-2 rounded-DEFAULT font-label-mono text-label-mono">View Details</button>
+</div>
+<div class="grid grid-cols-3 gap-8">
+<div class="col-span-1">
+<div class="font-label-mono text-label-mono text-on-surface-variant mb-2">Affected Feature</div>
+<div class="font-headline-sm text-headline-sm text-error bg-error/10 border border-error px-4 py-2 rounded inline-block">
+                                Last Purchase Days
+                            </div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-4">
+                                Distribution has shifted right by 1.2 standard deviations, potentially impacting causal treatment estimations for the 'Retention' campaign.
+                            </p>
+</div>
+<div class="col-span-2 bg-surface-dim rounded border border-outline-variant p-4 flex flex-col justify-end relative overflow-hidden h-32">
+<!-- Abstract drift representation -->
+<div class="absolute inset-0 flex items-end px-4 gap-2 opacity-50">
+<div class="w-1/12 h-[20%] bg-[#334155]"></div>
+<div class="w-1/12 h-[40%] bg-[#334155]"></div>
+<div class="w-1/12 h-[80%] bg-[#334155]"></div>
+<div class="w-1/12 h-[60%] bg-[#334155]"></div>
+<div class="w-1/12 h-[30%] bg-[#334155]"></div>
+<div class="w-1/12 h-[10%] bg-[#334155]"></div>
+</div>
+<div class="absolute inset-0 flex items-end px-4 gap-2 ml-4">
+<div class="w-1/12 h-[10%] bg-error"></div>
+<div class="w-1/12 h-[20%] bg-error"></div>
+<div class="w-1/12 h-[50%] bg-error"></div>
+<div class="w-1/12 h-[90%] bg-error"></div>
+<div class="w-1/12 h-[70%] bg-error"></div>
+<div class="w-1/12 h-[20%] bg-error"></div>
+</div>
+<div class="relative z-10 flex justify-between font-label-mono text-[10px] text-on-surface-variant mt-2 border-t border-[#334155] pt-2">
+<span>Expected</span>
+<span class="text-error">Actual (Shifted)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Executive Reports Section -->
+<div class="border-t border-[#334155] pt-12 mt-4">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-surface flex items-center gap-3">
+                            Executive Reports
+                        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2">Causal impact and ROI analysis across active models.</p>
+</div>
+<div class="flex gap-4">
+<button class="btn-secondary px-4 py-2 rounded-DEFAULT font-label-mono text-label-mono flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">download</span> CSV
+                        </button>
+<button class="btn-secondary px-4 py-2 rounded-DEFAULT font-label-mono text-label-mono flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">picture_as_pdf</span> PDF Report
+                        </button>
+<button class="btn-primary px-5 py-2 rounded-DEFAULT font-label-mono text-label-mono flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">auto_awesome</span> AI Summary
+                        </button>
+</div>
+</div>
+<!-- Data Table -->
+<div class="card-surface rounded-lg overflow-hidden border border-outline-variant">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-[#334155] bg-[#1e293b]/50">
+<th class="py-4 px-6 font-label-mono text-label-mono text-on-surface-variant font-medium">Business Initiative</th>
+<th class="py-4 px-6 font-label-mono text-label-mono text-on-surface-variant font-medium">Baseline Metric</th>
+<th class="py-4 px-6 font-label-mono text-label-mono text-on-surface-variant font-medium">Causal Uplift (ITE)</th>
+<th class="py-4 px-6 font-label-mono text-label-mono text-on-surface-variant font-medium">Est. Revenue Impact</th>
+<th class="py-4 px-6 font-label-mono text-label-mono text-on-surface-variant font-medium text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#334155]">
+<tr class="hover:bg-[#334155]/20 transition-colors">
+<td class="py-5 px-6 font-body-md text-body-md text-on-surface">Churn Reduction Protocol</td>
+<td class="py-5 px-6 font-label-mono text-label-mono text-on-surface-variant">4.2% Churn Rate</td>
+<td class="py-5 px-6 font-label-mono text-label-mono text-tertiary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">arrow_downward</span> -1.8% (ATE)
+                                </td>
+<td class="py-5 px-6 font-label-mono text-label-mono text-on-surface">+$420,500</td>
+<td class="py-5 px-6 text-right">
+<span class="inline-block px-2 py-1 rounded text-[11px] font-label-mono bg-tertiary/10 text-tertiary border border-tertiary/20">Optimized</span>
+</td>
+</tr>
+<tr class="hover:bg-[#334155]/20 transition-colors">
+<td class="py-5 px-6 font-body-md text-body-md text-on-surface">Upsell Conversion Engine</td>
+<td class="py-5 px-6 font-label-mono text-label-mono text-on-surface-variant">12.5% Conv.</td>
+<td class="py-5 px-6 font-label-mono text-label-mono text-tertiary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">arrow_upward</span> +3.2% (ATE)
+                                </td>
+<td class="py-5 px-6 font-label-mono text-label-mono text-on-surface">+$890,200</td>
+<td class="py-5 px-6 text-right">
+<span class="inline-block px-2 py-1 rounded text-[11px] font-label-mono bg-tertiary/10 text-tertiary border border-tertiary/20">Optimized</span>
+</td>
+</tr>
+<tr class="hover:bg-[#334155]/20 transition-colors">
+<td class="py-5 px-6 font-body-md text-body-md text-on-surface">Dynamic Pricing Strat.</td>
+<td class="py-5 px-6 font-label-mono text-label-mono text-on-surface-variant">$42.00 ARPU</td>
+<td class="py-5 px-6 font-label-mono text-label-mono text-error flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">arrow_downward</span> -$1.10 (ATE)
+                                </td>
+<td class="py-5 px-6 font-label-mono text-label-mono text-on-surface">-$15,400</td>
+<td class="py-5 px-6 text-right">
+<span class="inline-block px-2 py-1 rounded text-[11px] font-label-mono bg-error/10 text-error border border-error/20">Review Needed</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</body></html>
